@@ -1,0 +1,27 @@
+.warning-box {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    background-color: #fef9ec;
+    border: 0.5px solid #f0c060;
+    border-radius: 8px;
+    padding: 14px 16px;
+    color: #92600a;
+}
+
+.warning-box svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.warning-content strong {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.warning-content p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+}

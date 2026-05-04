@@ -1,0 +1,251 @@
+﻿@page "/GravitationalFieldCalculationOrder"
+@inject ILogger<GravitationalFieldCalculationOrderMain> logger
+@inject ISnackbar Snackbar
+@inject IDialogService DialogService
+<MudUnitAndReferenceChoiceTag HttpHost=@APIUtils.HostNameUnitConversion
+                              HttpBasePath=@APIUtils.HostBasePathUnitConversion
+                              HttpController="UnitSystem/"
+                              UnitSystemName="@DataUtils.UnitAndReferenceParameters.UnitSystemName"
+                              UnitSystemNameChanged="@DataUtils.UpdateUnitSystemName">
+    @if (gravitationalFieldCalculationOrderList == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <div hidden="@isHiddenMainPanel">
+            <MudDataGrid T="GravitationalFieldCalculationOrder" MultiSelection="true" Items="@gravitationalFieldCalculationOrderList" SelectedItemsChanged="@SelectedItemsChanged"
+                         EditMode="DataGridEditMode.Cell"
+                         Hover="true" 
+                         SortMode="SortMode.Multiple" QuickFilter="@_gravitationalFieldCalculationOrderFilter" Filterable="false"
+                         ReadOnly="false" ColumnResizeMode="ResizeMode.Column" Elevation="0">
+                <ToolBarContent>
+                    <MudText Typo="Typo.h6">Gravitational Field Calculation Order</MudText>
+                    <MudButton OnClick="@AddGravitationalFieldCalculationOrder" Color="@Color.Success" Class="add-item-btn">Add</MudButton>
+                    <MudButton OnClick="@DeleteSelectedGravitationalFieldCalculationOrder" Color="@Color.Error" Class="add-item-btn">Delete</MudButton>
+                    <MudSpacer />
+                    <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+                                  AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                </ToolBarContent>
+                <Columns>
+                    <SelectColumn T="GravitationalFieldCalculationOrder" />
+                    <PropertyColumn Property="x => x.Name" Title="Calculation Orders" CellStyle="width: 30%;" Sortable="true" Editable="false" />
+                    <PropertyColumn Property="x => x.Description" Title="Description" CellStyle="width: 40%;" Sortable="true" Editable="false" />
+                    <TemplateColumn CellStyle="width: 25%;">
+                        <EditTemplate>
+                            <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" OnClick="(() => EditGravitationalFieldCalculationOrder(context.Item.MetaInfo.ID))" />                                                
+                            <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Delete" OnClick="(() => DeleteGravitationalFieldCalculationOrder(context.Item.MetaInfo.ID))" />
+                        </EditTemplate>
+                    </TemplateColumn>
+                </Columns>
+                <PagerContent>
+                    <MudDataGridPager T="GravitationalFieldCalculationOrder" />
+                </PagerContent>
+            </MudDataGrid>
+        </div>
+    }
+    @if (isHiddenMainPanel && (!isHiddenEditPanel))
+    {
+        <GravitationalFieldCalculationOrderEdit GravitationalFieldCalculationOrderId="@gravitationalFieldCalculationOrderIdBeingEdited"  ValueChanged="HandleEditPanelClosed" />
+    }
+</MudUnitAndReferenceChoiceTag>
+
+@code {
+    // GravitationalFieldCalculationOrder related variables
+    private List<GravitationalFieldCalculationOrder> gravitationalFieldCalculationOrderList = new();
+    private List<GravitationalFieldCalculationOrder> selectedGravitationalFieldCalculationOrderList = new();
+    private GravitationalFieldCalculationOrder? currentGravitationalFieldCalculationOrder;
+    private List<object?>? inputDataList = new(); // container used to pass input data to the GravitationalFieldCalculationOrderEdit razor component without specifying content types (required by µservice Template)
+                                                  // GravitationalField related variables
+    private List<GravitationalField>? gravitationalFieldList;
+    // UI related variables
+    public bool isHiddenMainPanel;
+    public bool isHiddenEditPanel;
+    private Guid? gravitationalFieldCalculationOrderIdBeingEdited;
+    private string? _searchString;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            // Show main panel
+            isHiddenMainPanel = false;
+            isHiddenEditPanel = true;
+            currentGravitationalFieldCalculationOrder = null;
+
+            // Starting all loading tasks asynchronously
+            logger.LogInformation("Trying to load list of GravitationalField from client: " + APIUtils.HttpClientGravitationalField);
+            var gravitationalFieldTask = APIUtils.ClientGravitationalField.GetAllGravitationalFieldAsync();
+            logger.LogInformation("Trying to load list of GravitationalFieldCalculationOrder from client: " + APIUtils.HostNameGravitationalField);
+            var gravitationalFieldCalculationOrderTask = APIUtils.ClientGravitationalField.GetAllGravitationalFieldCalculationOrderAsync();
+
+            List<Task> loadingTaskList = new List<Task> { gravitationalFieldCalculationOrderTask };
+            loadingTaskList.Add(gravitationalFieldTask);
+
+            // Awaiting tasks and retrieve results as they become available
+            while (loadingTaskList.Count > 0)
+            {
+                Task finishedTask = await Task.WhenAny(loadingTaskList);
+                if (finishedTask == gravitationalFieldCalculationOrderTask)
+                {
+                    try
+                    {
+                        gravitationalFieldCalculationOrderList = (List<GravitationalFieldCalculationOrder>)await gravitationalFieldCalculationOrderTask; // awaiting the finished task allows to retrieve its result and throw exception if needed
+                        if (gravitationalFieldCalculationOrderList != null)
+                        {
+                            gravitationalFieldCalculationOrderList.Sort((t1, t2) => t1.Name.CompareTo(t2.Name));
+                        }
+                        else
+                        {
+                            logger.LogWarning("Returned list of GravitationalFieldCalculationOrder were null on initialization");
+                            Snackbar.Add("Returned list of GravitationalFieldCalculationOrder were null on initialization", Severity.Warning);
+                        }
+                    }
+                    catch (ApiException ex)
+                    {
+                        logger.LogError(ex, "Impossible to load GravitationalFieldCalculationOrder from client");
+                    }
+                }
+                else if (finishedTask == gravitationalFieldTask)
+                {
+                    try
+                    {
+                        gravitationalFieldList = (List<GravitationalField>)await gravitationalFieldTask; // awaiting the finished task allows to retrieve its result and throw exception if needed
+                        if (gravitationalFieldList != null)
+                        {
+                            gravitationalFieldList.Sort((f1, f2) => f1.Name.CompareTo(f2.Name));
+                        }
+                        else
+                        {
+                            logger.LogWarning("Returned list of GravitationalField were null on initialization");
+                            Snackbar.Add("Returned list of GravitationalField were null on initialization", Severity.Warning);
+                        }
+                    }
+                    catch (ApiException ex)
+                    {
+                        logger.LogError(ex, "Impossible to load GravitationalField from client");
+                    }
+                }
+                loadingTaskList.Remove(finishedTask);
+            }
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Problem GravitationalFieldCalculationOrder initialization");
+        }
+        await InvokeAsync(() => { StateHasChanged(); });
+    }
+
+    private async Task AddGravitationalFieldCalculationOrder()
+    {
+        isHiddenMainPanel = true;
+        isHiddenEditPanel = false;
+        gravitationalFieldCalculationOrderIdBeingEdited = null;
+    }
+
+    private async Task EditGravitationalFieldCalculationOrder(Guid id)
+    {
+        isHiddenMainPanel = true;
+        isHiddenEditPanel = false;
+        gravitationalFieldCalculationOrderIdBeingEdited = id;
+    }
+    private async Task HandleEditPanelClosed()
+    {
+        isHiddenMainPanel = false;
+        isHiddenEditPanel = true;
+        gravitationalFieldCalculationOrderIdBeingEdited = null;
+        await OnInitializedAsync();
+    }
+
+    private async Task<bool> ConfirmDeletion()
+    {
+        var options = new DialogOptions 
+        { 
+            CloseOnEscapeKey = true,
+            MaxWidth = MaxWidth.Small,
+            FullWidth = true    
+        };
+        var dialog = await DialogService.ShowAsync<DialogDeleteTemplate>("DELETE", options);
+        var result = await dialog.Result;
+        StateHasChanged();
+        if (result == null)
+        {
+            return false;
+        }
+        else
+        {
+            return (!result.Canceled);
+        }
+    }
+    private async Task DeleteGravitationalFieldCalculationOrder(Guid id)
+    {
+        try
+        {
+            if (await ConfirmDeletion())
+            {
+                await APIUtils.ClientGravitationalField.DeleteGravitationalFieldCalculationOrderByIdAsync(id);
+                await OnInitializedAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Impossible to delete GravitationalFieldCalculationOrder");
+        }
+    }
+    
+
+    private async Task DeleteSelectedGravitationalFieldCalculationOrder()
+    {
+        try
+        {
+            if (await ConfirmDeletion())
+            {
+                foreach (GravitationalFieldCalculationOrder gravitationalFieldCalculationOrder in selectedGravitationalFieldCalculationOrderList)
+                {
+                    await APIUtils.ClientGravitationalField.DeleteGravitationalFieldCalculationOrderByIdAsync(gravitationalFieldCalculationOrder.MetaInfo.ID);
+                }
+                await OnInitializedAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Impossible to delete all GravitationalFieldCalculationOrder");
+        }
+
+    }
+
+    //Quick filter - filter gobally across multiple columns with the same input
+    private Func<GravitationalFieldCalculationOrder, bool>
+    _gravitationalFieldCalculationOrderFilter => x =>
+    {
+        if (string.IsNullOrWhiteSpace(_searchString))
+            return true;
+        if ($"{x.Name} {x.Description}".Contains(_searchString))
+            return true;
+
+        return false;
+    };
+    
+    //Events
+    private void StartedEditingItem(GravitationalFieldCalculationOrder item)
+    {
+        //Activating Edit event capture with parameter StartedEditingItem="@StartedEditingItem" in MudDataGrid; arguments are specified in OnClick="@context.Actions.StartedEditingItem(...)"
+    }
+
+    private void CancelledEditingItem(GravitationalFieldCalculationOrder item)
+    {
+        //Activating Cancel event capture with parameter CancelledEditingItem = "@CancelledEditingItem" in MudDataGrid; arguments are specified in OnClick="@context.Actions.CancelledEditingItem(...)"
+    }
+
+    private void CommittedItemChanges(GravitationalFieldCalculationOrder item)
+    {
+        //Activating Commit event capture with parameter CommittedItemChanges = "@CommittedItemChanges" in MudDataGrid; arguments are specified in OnClick="@context.Actions.CommittedEditingItem(...)"
+    }
+
+    void SelectedItemsChanged(HashSet<GravitationalFieldCalculationOrder>
+        items)
+    {
+        selectedGravitationalFieldCalculationOrderList.Clear();
+        selectedGravitationalFieldCalculationOrderList.InsertRange(0, items);
+    }
+}

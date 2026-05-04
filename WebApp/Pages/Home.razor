@@ -1,0 +1,30 @@
+@page "/Home"
+<MudText Class="mx-4 px-4 ym-4 pm-4" Typo="Typo.h2">Home</MudText>  
+<MudDivider Class="mb-4 pb-4"/>
+<MudText Class="mx-4 px-4 ym-4 pm-4" Typo="Typo.h5">Introduction</MudText>
+<MudText Class="mx-6 px-6 ym-4 pm-4" Typo="Typo.body1">
+    This WebApp is uses the GravitationalField microservice. It is based on the GeographicLib.NET and uses 
+    the EGM96 protocol to estimate the gravitational acceleration in given Latitude, Longitude and Depth position. 
+</MudText>
+
+@code{
+    private bool showAddTutorial = true;
+    private bool showUploadTutorial = true;
+    private bool showViewTutorial = true;
+
+    private void ShowHideAddTutorial()
+    {
+        showAddTutorial = !showAddTutorial;
+    } 
+    private string HideColors(bool expandBool)
+    {
+        if (expandBool)
+        {
+            return Colors.Indigo.Lighten1;
+        }
+        else
+        {
+            return Colors.Indigo.Darken4;            
+        }
+    }
+}
