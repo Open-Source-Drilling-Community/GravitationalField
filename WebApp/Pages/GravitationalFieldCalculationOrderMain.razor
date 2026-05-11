@@ -1,4 +1,4 @@
-﻿@page "/GravitationalFieldCalculationOrder"
+﻿@page "/GravitationalField"
 @inject ILogger<GravitationalFieldCalculationOrderMain> logger
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
@@ -20,7 +20,7 @@
                          SortMode="SortMode.Multiple" QuickFilter="@_gravitationalFieldCalculationOrderFilter" Filterable="false"
                          ReadOnly="false" ColumnResizeMode="ResizeMode.Column" Elevation="0">
                 <ToolBarContent>
-                    <MudText Typo="Typo.h6">Gravitational Field Calculation Order</MudText>
+                    <MudText Typo="Typo.h6">Gravitational Field Calculator</MudText>
                     <MudButton OnClick="@AddGravitationalFieldCalculationOrder" Color="@Color.Success" Class="add-item-btn">Add</MudButton>
                     <MudButton OnClick="@DeleteSelectedGravitationalFieldCalculationOrder" Color="@Color.Error" Class="add-item-btn">Delete</MudButton>
                     <MudSpacer />
@@ -42,11 +42,46 @@
                     <MudDataGridPager T="GravitationalFieldCalculationOrder" />
                 </PagerContent>
             </MudDataGrid>
+
+            <br/>
+            <br/>
+
+            <MudDataGrid T="GravitationalField" MultiSelection="true" Items="@gravitationalFieldList" SelectedItemsChanged="@SelectedItemsChanged"
+                         EditMode="DataGridEditMode.Cell"
+                         Hover="true" 
+                         SortMode="SortMode.Multiple" QuickFilter="@_gravitationalFieldFilter" Filterable="false"
+                         ReadOnly="false" ColumnResizeMode="ResizeMode.Column" Elevation="0">
+                <ToolBarContent>
+                    <MudText Typo="Typo.h6">Calculated Gravitational Field</MudText>
+                    <MudButton OnClick="@DeleteSelectedGravitationalField" Color="@Color.Error" Class="add-item-btn">Delete</MudButton>
+                    <MudSpacer />
+                    <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+                                  AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                </ToolBarContent>
+                <Columns>
+                    <SelectColumn T="GravitationalField" />
+                    <PropertyColumn Property="x => x.Name" Title="Calculation Orders" CellStyle="width: 30%;" Sortable="true" Editable="false" />
+                    <PropertyColumn Property="x => x.Description" Title="Description" CellStyle="width: 40%;" Sortable="true" Editable="false" />
+                    <TemplateColumn CellStyle="width: 25%;">
+                        <EditTemplate>
+                            <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Filled.RemoveRedEye" OnClick="(() => ViewGravitationalField(context.Item.MetaInfo.ID))" />                                                
+                            <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Delete" OnClick="(() => DeleteGravitationalField(context.Item.MetaInfo.ID))" />
+                        </EditTemplate>
+                    </TemplateColumn>
+                </Columns>
+                <PagerContent>
+                    <MudDataGridPager T="GravitationalField" />
+                </PagerContent>
+            </MudDataGrid>
         </div>
     }
     @if (isHiddenMainPanel && (!isHiddenEditPanel))
     {
         <GravitationalFieldCalculationOrderEdit GravitationalFieldCalculationOrderId="@gravitationalFieldCalculationOrderIdBeingEdited"  ValueChanged="HandleEditPanelClosed" />
+    }
+    @if (isHiddenMainPanel && (!isHiddenViewPanel))
+    {
+        <GravitationalFieldView GravitationalFieldId="@gravitationalFieldIdBeingViewed"  ValueChanged="HandleEditPanelClosed" />
     }
 </MudUnitAndReferenceChoiceTag>
 
@@ -58,9 +93,13 @@
     private List<object?>? inputDataList = new(); // container used to pass input data to the GravitationalFieldCalculationOrderEdit razor component without specifying content types (required by µservice Template)
                                                   // GravitationalField related variables
     private List<GravitationalField>? gravitationalFieldList;
+    private List<GravitationalField> selectedGravitationalFieldList = new();
+
     // UI related variables
-    public bool isHiddenMainPanel;
-    public bool isHiddenEditPanel;
+    private bool isHiddenMainPanel;
+    private bool isHiddenEditPanel;
+    private bool isHiddenViewPanel;
+    private Guid? gravitationalFieldIdBeingViewed = null;
     private Guid? gravitationalFieldCalculationOrderIdBeingEdited;
     private string? _searchString;
 
@@ -71,6 +110,7 @@
             // Show main panel
             isHiddenMainPanel = false;
             isHiddenEditPanel = true;
+            isHiddenViewPanel = true;
             currentGravitationalFieldCalculationOrder = null;
 
             // Starting all loading tasks asynchronously
@@ -140,6 +180,7 @@
     {
         isHiddenMainPanel = true;
         isHiddenEditPanel = false;
+        isHiddenViewPanel = true;
         gravitationalFieldCalculationOrderIdBeingEdited = null;
     }
 
@@ -147,7 +188,15 @@
     {
         isHiddenMainPanel = true;
         isHiddenEditPanel = false;
+        isHiddenViewPanel = true;
         gravitationalFieldCalculationOrderIdBeingEdited = id;
+    }
+    private async Task ViewGravitationalField(Guid id)
+    {
+        isHiddenMainPanel = true;
+        isHiddenEditPanel = true;
+        isHiddenViewPanel = false;
+        gravitationalFieldIdBeingViewed = id;
     }
     private async Task HandleEditPanelClosed()
     {
@@ -225,6 +274,16 @@
 
         return false;
     };
+    private Func<GravitationalField, bool>
+    _gravitationalFieldFilter => x =>
+    {
+        if (string.IsNullOrWhiteSpace(_searchString))
+            return true;
+        if ($"{x.Name} {x.Description}".Contains(_searchString))
+            return true;
+
+        return false;
+    };
     
     //Events
     private void StartedEditingItem(GravitationalFieldCalculationOrder item)
@@ -248,4 +307,44 @@
         selectedGravitationalFieldCalculationOrderList.Clear();
         selectedGravitationalFieldCalculationOrderList.InsertRange(0, items);
     }
+    void SelectedItemsChanged(HashSet<GravitationalField>
+        items)
+    {
+        selectedGravitationalFieldList.Clear();
+        selectedGravitationalFieldList.InsertRange(0, items);
+    }
+    private async Task DeleteSelectedGravitationalField()
+    {
+        try
+        {
+            if (await ConfirmDeletion())
+            {
+                foreach (GravitationalField gravitationalField in selectedGravitationalFieldList!)
+                {
+                    await APIUtils.ClientGravitationalField.DeleteGravitationalFieldCalculationOrderByIdAsync(gravitationalField.MetaInfo.ID);
+                }
+                await OnInitializedAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Impossible to delete all GravitationalFieldCalculationOrder");
+        }
+    }
+    private async Task DeleteGravitationalField(Guid id)
+    {
+        try
+        {
+            if (await ConfirmDeletion())
+            {
+                await APIUtils.ClientGravitationalField.DeleteGravitationalFieldByIdAsync(id);
+                await OnInitializedAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Impossible to delete GravitationalField");
+        }
+    }
+    
 }

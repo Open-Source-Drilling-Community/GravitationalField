@@ -1,0 +1,150 @@
+﻿@inject ILogger<MudInputWithUnitAdornment> logger
+@inject ISnackbar Snackbar
+
+
+<MudPaper Class="ma-2 pa-2" Elevation="4" Style="@($"background:{DataUtils.FLOATING_COLOUR};")">
+    <MudPaper Class="ma-1 pa-1" Elevation="2">
+        <MudToolBar Dense="true">
+            <MudText Typo="Typo.h5" Class="mr-4">Edit GravitationalField</MudText>
+            <MudButton StartIcon="@Icons.Material.Filled.SaveAs" Variant="Variant.Outlined" Color="Color.Primary" OnClick="SaveAsGravitationalField" Class="ml-1">Save new</MudButton>
+            @if (GravitationalFieldId != null)
+            {
+                <MudButton StartIcon="@Icons.Material.Filled.Save" Variant="Variant.Outlined" Color="Color.Primary" OnClick="SaveGravitationalField" Class="ml-1">Save</MudButton>
+            }
+            <MudSpacer />
+            <MudButton StartIcon="@Icons.Material.Filled.Close" Variant="Variant.Outlined" Color="Color.Error" OnClick="SendMessage" Class="ml-1">Close</MudButton>
+        </MudToolBar>
+        <MudDivider Class="my-1"/>
+        <MudPaper Class="pa-4 ma-2" Elevation="0">
+            <MudTextField @bind-Value="currentGravitationalField.Name" Label="Name" Variant="Variant.Outlined" Required="true" For="@(() => currentGravitationalField.Name)" Class="mb-3" />
+            <MudTextField @bind-Value="currentGravitationalField.Description" Label="Description" Variant="Variant.Outlined" For="@(() => currentGravitationalField.Description)" />
+        </MudPaper>
+        <MudDivider Class="my-1"/>
+        <MudPaper Class="pa-2 ma-1" Elevation="0">        
+            <MudTable T=GravitationalData Items="currentGravitationalField.GravitationalDataTable">
+                <HeaderContent>
+                    <MudTh>Lattitude [@(Parent!.GetUnitLabel("PlaneAngleGeodesic"))]</MudTh>
+                    <MudTh>Longitude [@(Parent!.GetUnitLabel("PlaneAngleGeodesic"))]</MudTh>
+                    <MudTh>Depth [@(Parent!.GetUnitLabel("DepthDrilling"))]</MudTh>
+                    <MudTh>Gravity Vector [@(Parent!.GetUnitLabel("Acceleration"))]</MudTh>
+                    <MudTh>Gravity Magnitude [@(Parent!.GetUnitLabel("Acceleration"))]</MudTh>              
+                </HeaderContent>
+                <RowTemplate>                
+                    <MudTd>
+                        <MudText>@(FormatDouble(context.Lattitude, "PlaneAngleGeodesic"))</MudText>
+                    </MudTd>
+                    <MudTd>
+                        <MudText>@(FormatDouble(context.Longitude, "PlaneAngleGeodesic"))</MudText>
+                    </MudTd>
+                    <MudTd>
+                        <MudText>@(FormatDouble(context.Depth, "DepthDrilling"))</MudText>
+                    </MudTd>
+                    <MudTd>
+                        <MudText>@(FormatGravityVector(context))</MudText>
+                    </MudTd>
+                    <MudTd>
+                        <MudText>@(FormatGravityMagnitude(context))</MudText>
+                    </MudTd>                
+                </RowTemplate>
+            </MudTable>            
+        </MudPaper>
+    </MudPaper>
+</MudPaper>
+
+@code{
+     [CascadingParameter]
+    private MudUnitAndReferenceChoiceTag? Parent { get; set; }
+    [Parameter]
+    public Guid? GravitationalFieldId { get; set; }
+    [Parameter]
+    public EventCallback ValueChanged {get; set;}    
+
+
+    private GravitationalField currentGravitationalField = PseudoConstructors.ConstructGravitationalField();
+    
+    
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (GravitationalFieldId != null)
+        {
+            currentGravitationalField = await APIUtils.ClientGravitationalField.GetGravitationalFieldByIdAsync(GravitationalFieldId.Value);
+        }
+        await InvokeAsync(() => { StateHasChanged(); });
+    }
+    //Send message to parent component
+    private async Task SendMessage()
+    {
+        await ValueChanged.InvokeAsync();
+    }  
+    private string FormatGravityMagnitude(GravitationalData gravData)
+    {
+        double gravX = Parent!.FromSI(gravData.GravitatyIntensityX, "Acceleration") ?? Double.NaN;// (gravData.GravitatyIntensityX == null) ? Double.NaN : (double) gravData.GravitatyIntensityX;
+        double gravY = Parent!.FromSI(gravData.GravitatyIntensityY, "Acceleration") ?? Double.NaN;// (gravData.GravitatyIntensityY == null) ? Double.NaN : (double) gravData.GravitatyIntensityY;
+        double gravZ = Parent!.FromSI(gravData.GravitatyIntensityZ, "Acceleration") ?? Double.NaN;// (gravData.GravitatyIntensityZ == null) ? Double.NaN : (double) gravData.GravitatyIntensityZ;
+        double magnitude = Math.Sqrt(gravX*gravX + gravY*gravY + gravZ*gravZ );  
+        return magnitude.ToString("F2");
+    }
+    private string FormatGravityVector(GravitationalData gravData)
+    {
+        double gravX = Parent!.FromSI(gravData.GravitatyIntensityX, "Acceleration") ?? Double.NaN;// (gravData.GravitatyIntensityX == null) ? Double.NaN : (double) gravData.GravitatyIntensityX;
+        double gravY = Parent!.FromSI(gravData.GravitatyIntensityY, "Acceleration") ?? Double.NaN;// (gravData.GravitatyIntensityY == null) ? Double.NaN : (double) gravData.GravitatyIntensityY;
+        double gravZ = Parent!.FromSI(gravData.GravitatyIntensityZ, "Acceleration") ?? Double.NaN;// (gravData.GravitatyIntensityZ == null) ? Double.NaN : (double) gravData.GravitatyIntensityZ;
+
+        return "{\t" + gravX.ToString("F2") 
+                + "\t" + gravY.ToString("F2")
+                + "\t" + gravZ.ToString("F2") + "\t}"     ;
+    }
+    private string FormatDouble(double? valNullable, string quantityName)
+    {
+
+        double val = Parent!.FromSI(valNullable, quantityName) ?? double.NaN;
+        return val.ToString("F2");
+    }
+    //Add/Edit panel controls
+    private async Task SaveGravitationalField()
+    {
+        try
+        {
+            if (GravitationalFieldId != null)
+            {
+                currentGravitationalField.LastModificationDate = DateTimeOffset.UtcNow;                            
+                await APIUtils.ClientGravitationalField.PutGravitationalFieldByIdAsync((Guid) GravitationalFieldId, currentGravitationalField);
+                Snackbar.Add("GravitationalField updated successfully", Severity.Success);
+                await SendMessage();
+            }
+            else
+            {
+                Snackbar.Add("GravitationalField not found for edition", Severity.Success);
+            }
+
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error saving GravitationalField");
+            Snackbar.Add("Error saving GravitationalField: " + ex.Message, Severity.Warning);
+        }
+    }
+    private async Task SaveAsGravitationalField()
+    {
+        try
+        {
+
+            currentGravitationalField.MetaInfo.ID = Guid.NewGuid();
+            currentGravitationalField.CreationDate = DateTimeOffset.UtcNow;
+            currentGravitationalField.LastModificationDate = DateTimeOffset.UtcNow;         
+            await APIUtils.ClientGravitationalField.PostGravitationalFieldAsync(currentGravitationalField);
+            Snackbar.Add("GravitationalField updated successfully", Severity.Success);
+            await SendMessage();            
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error saving GravitationalField");
+            Snackbar.Add("Error saving GravitationalField: " + ex.Message, Severity.Warning);
+        }
+    }      
+    
+    
+    //Update unit system
+    private void ManageUnits(){}
+}
