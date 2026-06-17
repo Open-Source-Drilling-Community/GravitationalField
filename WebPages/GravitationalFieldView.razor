@@ -1,4 +1,5 @@
-﻿@inject ILogger<MudInputWithUnitAdornment> logger
+@inject ILogger<MudInputWithUnitAdornment> logger
+@inject IGravitationalFieldAPIUtils Api
 @inject ISnackbar Snackbar
 
 
@@ -68,7 +69,7 @@
     {
         if (GravitationalFieldId != null)
         {
-            currentGravitationalField = await APIUtils.ClientGravitationalField.GetGravitationalFieldByIdAsync(GravitationalFieldId.Value);
+            currentGravitationalField = await Api.ClientGravitationalField.GetGravitationalFieldByIdAsync(GravitationalFieldId.Value);
         }
         await InvokeAsync(() => { StateHasChanged(); });
     }
@@ -109,7 +110,7 @@
             if (GravitationalFieldId != null)
             {
                 currentGravitationalField.LastModificationDate = DateTimeOffset.UtcNow;                            
-                await APIUtils.ClientGravitationalField.PutGravitationalFieldByIdAsync((Guid) GravitationalFieldId, currentGravitationalField);
+                await Api.ClientGravitationalField.PutGravitationalFieldByIdAsync((Guid) GravitationalFieldId, currentGravitationalField);
                 Snackbar.Add("GravitationalField updated successfully", Severity.Success);
                 await SendMessage();
             }
@@ -133,7 +134,7 @@
             currentGravitationalField.MetaInfo.ID = Guid.NewGuid();
             currentGravitationalField.CreationDate = DateTimeOffset.UtcNow;
             currentGravitationalField.LastModificationDate = DateTimeOffset.UtcNow;         
-            await APIUtils.ClientGravitationalField.PostGravitationalFieldAsync(currentGravitationalField);
+            await Api.ClientGravitationalField.PostGravitationalFieldAsync(currentGravitationalField);
             Snackbar.Add("GravitationalField updated successfully", Severity.Success);
             await SendMessage();            
         }

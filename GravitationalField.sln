@@ -9,7 +9,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Model", "Model\Model.csproj", "{175CA85F-A210-4E23-8F9C-30B227F73A1D}"
 EndProject
-
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModelSharedOut", "ModelSharedOut\ModelSharedOut.csproj", "{7D00C38E-D009-4506-B6FE-4A2ED039CA4D}"
 	ProjectSection(ProjectDependencies) = postProject
 		{0600E920-F4A9-4403-A221-FA03B908E7FC} = {0600E920-F4A9-4403-A221-FA03B908E7FC}
@@ -21,6 +20,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModelTest", "ModelTest\ModelTest.csproj", "{E8BAB67B-27C9-4A01-812D-737A768130B4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApp", "WebApp\WebApp.csproj", "{CA557B90-68A1-4B16-8DF0-787C4FAEC877}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebPages", "WebPages\WebPages.csproj", "{7D6D07E3-2AF3-4872-81CA-21AC62286A34}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -56,6 +57,10 @@ Global
 		{CA557B90-68A1-4B16-8DF0-787C4FAEC877}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CA557B90-68A1-4B16-8DF0-787C4FAEC877}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CA557B90-68A1-4B16-8DF0-787C4FAEC877}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D6D07E3-2AF3-4872-81CA-21AC62286A34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D6D07E3-2AF3-4872-81CA-21AC62286A34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D6D07E3-2AF3-4872-81CA-21AC62286A34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D6D07E3-2AF3-4872-81CA-21AC62286A34}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,9 +1,10 @@
-﻿@page "/GravitationalField"
+@page "/GravitationalField"
 @inject ILogger<GravitationalFieldCalculationOrderMain> logger
+@inject IGravitationalFieldAPIUtils Api
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
-<MudUnitAndReferenceChoiceTag HttpHost=@APIUtils.HostNameUnitConversion
-                              HttpBasePath=@APIUtils.HostBasePathUnitConversion
+<MudUnitAndReferenceChoiceTag HttpHost=@Api.HostNameUnitConversion
+                              HttpBasePath=@Api.HostBasePathUnitConversion
                               HttpController="UnitSystem/"
                               UnitSystemName="@DataUtils.UnitAndReferenceParameters.UnitSystemName"
                               UnitSystemNameChanged="@DataUtils.UpdateUnitSystemName">
@@ -90,7 +91,7 @@
     private List<GravitationalFieldCalculationOrder> gravitationalFieldCalculationOrderList = new();
     private List<GravitationalFieldCalculationOrder> selectedGravitationalFieldCalculationOrderList = new();
     private GravitationalFieldCalculationOrder? currentGravitationalFieldCalculationOrder;
-    private List<object?>? inputDataList = new(); // container used to pass input data to the GravitationalFieldCalculationOrderEdit razor component without specifying content types (required by µservice Template)
+    private List<object?>? inputDataList = new(); // container used to pass input data to the GravitationalFieldCalculationOrderEdit razor component without specifying content types (required by �service Template)
                                                   // GravitationalField related variables
     private List<GravitationalField>? gravitationalFieldList;
     private List<GravitationalField> selectedGravitationalFieldList = new();
@@ -114,10 +115,10 @@
             currentGravitationalFieldCalculationOrder = null;
 
             // Starting all loading tasks asynchronously
-            logger.LogInformation("Trying to load list of GravitationalField from client: " + APIUtils.HttpClientGravitationalField);
-            var gravitationalFieldTask = APIUtils.ClientGravitationalField.GetAllGravitationalFieldAsync();
-            logger.LogInformation("Trying to load list of GravitationalFieldCalculationOrder from client: " + APIUtils.HostNameGravitationalField);
-            var gravitationalFieldCalculationOrderTask = APIUtils.ClientGravitationalField.GetAllGravitationalFieldCalculationOrderAsync();
+            logger.LogInformation("Trying to load list of GravitationalField from client: " + Api.HttpClientGravitationalField);
+            var gravitationalFieldTask = Api.ClientGravitationalField.GetAllGravitationalFieldAsync();
+            logger.LogInformation("Trying to load list of GravitationalFieldCalculationOrder from client: " + Api.HostNameGravitationalField);
+            var gravitationalFieldCalculationOrderTask = Api.ClientGravitationalField.GetAllGravitationalFieldCalculationOrderAsync();
 
             List<Task> loadingTaskList = new List<Task> { gravitationalFieldCalculationOrderTask };
             loadingTaskList.Add(gravitationalFieldTask);
@@ -232,7 +233,7 @@
         {
             if (await ConfirmDeletion())
             {
-                await APIUtils.ClientGravitationalField.DeleteGravitationalFieldCalculationOrderByIdAsync(id);
+                await Api.ClientGravitationalField.DeleteGravitationalFieldCalculationOrderByIdAsync(id);
                 await OnInitializedAsync();
             }
         }
@@ -251,7 +252,7 @@
             {
                 foreach (GravitationalFieldCalculationOrder gravitationalFieldCalculationOrder in selectedGravitationalFieldCalculationOrderList)
                 {
-                    await APIUtils.ClientGravitationalField.DeleteGravitationalFieldCalculationOrderByIdAsync(gravitationalFieldCalculationOrder.MetaInfo.ID);
+                    await Api.ClientGravitationalField.DeleteGravitationalFieldCalculationOrderByIdAsync(gravitationalFieldCalculationOrder.MetaInfo.ID);
                 }
                 await OnInitializedAsync();
             }
@@ -321,7 +322,7 @@
             {
                 foreach (GravitationalField gravitationalField in selectedGravitationalFieldList!)
                 {
-                    await APIUtils.ClientGravitationalField.DeleteGravitationalFieldCalculationOrderByIdAsync(gravitationalField.MetaInfo.ID);
+                    await Api.ClientGravitationalField.DeleteGravitationalFieldCalculationOrderByIdAsync(gravitationalField.MetaInfo.ID);
                 }
                 await OnInitializedAsync();
             }
@@ -337,7 +338,7 @@
         {
             if (await ConfirmDeletion())
             {
-                await APIUtils.ClientGravitationalField.DeleteGravitationalFieldByIdAsync(id);
+                await Api.ClientGravitationalField.DeleteGravitationalFieldByIdAsync(id);
                 await OnInitializedAsync();
             }
         }

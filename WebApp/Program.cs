@@ -1,7 +1,15 @@
 using MudBlazor;
 using MudBlazor.Services;
+using NORCE.Drilling.GravitationalField.WebApp;
+using NORCE.Drilling.GravitationalField.WebPages;
 
 var builder = WebApplication.CreateBuilder(args);
+
+WebPagesHostConfiguration webPagesConfiguration = new()
+{
+    GravitationalFieldHostURL = builder.Configuration["GravitationalFieldHostURL"] ?? string.Empty,
+    UnitConversionHostURL = builder.Configuration["UnitConversionHostURL"] ?? string.Empty,
+};
 
 // Add services to the container.
 builder.Services.AddRazorPages();
@@ -17,17 +25,14 @@ builder.Services.AddMudServices(config =>
     config.SnackbarConfiguration.ShowTransitionDuration = 500;
     config.SnackbarConfiguration.SnackbarVariant = Variant.Filled;
 });
+builder.Services.AddSingleton<IGravitationalFieldWebPagesConfiguration>(webPagesConfiguration);
+builder.Services.AddSingleton<IGravitationalFieldAPIUtils, APIUtils>();
 
 var app = builder.Build();
 
 app.UseForwardedHeaders();
 // This needs to match with what is defined in "charts/<helm-chart-name>/templates/values.yaml ingress.Path
 app.UsePathBase("/GravitationalField/webapp");
-
-if (!String.IsNullOrEmpty(builder.Configuration["GravitationalFieldHostURL"]))
-    NORCE.Drilling.GravitationalField.WebApp.Configuration.GravitationalFieldHostURL = builder.Configuration["GravitationalFieldHostURL"];
-if (!String.IsNullOrEmpty(builder.Configuration["UnitConversionHostURL"]))
-    NORCE.Drilling.GravitationalField.WebApp.Configuration.UnitConversionHostURL = builder.Configuration["UnitConversionHostURL"];
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

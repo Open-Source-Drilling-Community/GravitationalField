@@ -1,5 +1,6 @@
-﻿@using System.Reflection.Metadata
+@using System.Reflection.Metadata
 @inject ILogger<MudInputWithUnitAdornment> logger
+@inject IGravitationalFieldAPIUtils Api
 @inject ISnackbar Snackbar
 
 
@@ -128,9 +129,9 @@
     {
         if (GravitationalFieldCalculationOrderId != null)
         {
-            currentGravitationalFieldCalculationOrder = await APIUtils.ClientGravitationalField.GetGravitationalFieldCalculationOrderByIdAsync(GravitationalFieldCalculationOrderId.Value);
+            currentGravitationalFieldCalculationOrder = await Api.ClientGravitationalField.GetGravitationalFieldCalculationOrderByIdAsync(GravitationalFieldCalculationOrderId.Value);
         }
-        unprocessedGravitationalFieldList = await APIUtils.ClientGravitationalField.GetAllCompletedGravitationalFieldAsync(false);
+        unprocessedGravitationalFieldList = await Api.ClientGravitationalField.GetAllCompletedGravitationalFieldAsync(false);
     
         await InvokeAsync(() => { StateHasChanged(); });
     }
@@ -168,7 +169,7 @@
             if (GravitationalFieldCalculationOrderId != null)
             {
                 currentGravitationalFieldCalculationOrder.LastModificationDate = DateTimeOffset.UtcNow;            
-                await APIUtils.ClientGravitationalField.PutGravitationalFieldCalculationOrderByIdAsync((Guid) GravitationalFieldCalculationOrderId, currentGravitationalFieldCalculationOrder);
+                await Api.ClientGravitationalField.PutGravitationalFieldCalculationOrderByIdAsync((Guid) GravitationalFieldCalculationOrderId, currentGravitationalFieldCalculationOrder);
                 Snackbar.Add("GravitationalFieldCalculationOrder updated successfully", Severity.Success);
                 await SendMessage();
             }
@@ -191,7 +192,7 @@
             currentGravitationalFieldCalculationOrder.MetaInfo.ID = Guid.NewGuid();
             currentGravitationalFieldCalculationOrder.CreationDate = DateTimeOffset.UtcNow;
             currentGravitationalFieldCalculationOrder.LastModificationDate = DateTimeOffset.UtcNow;
-            await APIUtils.ClientGravitationalField.PostGravitationalFieldCalculationOrderAsync(currentGravitationalFieldCalculationOrder);
+            await Api.ClientGravitationalField.PostGravitationalFieldCalculationOrderAsync(currentGravitationalFieldCalculationOrder);
             Snackbar.Add("GravitationalFieldCalculationOrder updated successfully", Severity.Success);
             await SendMessage();                        
         }
@@ -218,7 +219,7 @@
         }
         if (points.Count == 0)
         {
-            Snackbar.Add("Range produced no points — check min/max/step values", Severity.Warning);
+            Snackbar.Add("Range produced no points � check min/max/step values", Severity.Warning);
             return;
         }
         currentGravitationalFieldCalculationOrder.RawGravitationalField.GravitationalDataTable = points;
