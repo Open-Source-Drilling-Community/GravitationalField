@@ -27,7 +27,7 @@ The solution is composed of:
   - microservice client that performs unit tests on the microservice (by default, an instance of the microservice must be running on http port 8080 to run tests)
   - *dependencies* = ModelShared
 - **WebApp**
-  - microservice web app client that manages data associated with GravitationalField and allow to interact with the microservice
+  - microservice web app client that manages data associated with GravitationalField and allows single-case and batch interaction with the microservice
   - *dependencies* = ModelShared
 - **home** (auto-generated)
   - data are persisted in the microservice container using the Sqlite database located at *home/GravitationalField.db*
@@ -52,11 +52,17 @@ https://dev.digiwells.no/GravitationalField/api/GravitationalFieldCalculationOrd
 
 https://app.digiwells.no/GravitationalField/api/GravitationalFieldCalculationOrder
 
-Web app is available at:
+Web app management page is available at:
 
-https://dev.digiwells.no/GravitationalField/webapp/GravitationalFieldCalculationOrder
+https://dev.digiwells.no/GravitationalField/webapp/GravitationalField
 
-https://app.digiwells.no/GravitationalField/webapp/GravitationalFieldCalculationOrder
+https://app.digiwells.no/GravitationalField/webapp/GravitationalField
+
+The single-case gravitational field calculator is available at:
+
+https://dev.digiwells.no/GravitationalField/webapp/GravitationalFieldSingleCalculation
+
+https://app.digiwells.no/GravitationalField/webapp/GravitationalFieldSingleCalculation
 
 The OpenApi schema of the microservice is available and testable at:
 
@@ -74,10 +80,6 @@ The current work has been funded by the [Research Council of Norway](https://www
 
 # Contributors
 
-**Eric Cayeux**, *NORCE Energy Modelling and Automation*
-
-**Gilles Pelfrene**, *NORCE Energy Modelling and Automation*
-
-**Andrew Holsaeter**, *NORCE Energy Modelling and Automation*
-
 **Lucas Volpi**, *NORCE Energy Modelling and Automation*
+
+**Eric Cayeux**, *NORCE Energy Modelling and Automation*

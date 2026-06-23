@@ -1,0 +1,227 @@
+@page "/GravitationalFieldSingleCalculation"
+@inject ILogger<GravitationalFieldSingleCalculation> logger
+@inject ISnackbar Snackbar
+@inject IGravitationalFieldAPIUtils Api
+
+<MudUnitAndReferenceChoiceTag HttpHost=@Api.HostNameUnitConversion
+                              HttpBasePath=@Api.HostBasePathUnitConversion
+                              HttpController="UnitSystem/"
+                              UnitSystemName="@DataUtils.UnitAndReferenceParameters.UnitSystemName"
+                              UnitSystemNameChanged="@DataUtils.UpdateUnitSystemName">
+    <MudForm>
+        <MudPaper Class="p-4 mb-4" Elevation="2">
+            <MudContainer Class="d-flex flex-column" style="max-width: 900px; width: 100%;">
+                <MudText Typo="Typo.h6" Class="mb-2">Earth Gravitational Field Single Calculation</MudText>
+                <MudGrid>
+                    <MudItem xs="12" sm="6">
+                        <MudInputAngleWithUnitAdornment QuantityLabel="Sexagesimal Latitude (WGS84)"
+                                                        SIValueNullable="latitudeWGS84"
+                                                        SIValueNullableChanged="@(val => latitudeWGS84 = val)" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudInputWithUnitAdornment QuantityName="PlaneAngleGeodesic"
+                                                   QuantityLabel="Decimal Latitude (WGS84)"
+                                                   SIValueNullable="latitudeWGS84"
+                                                   SIValueNullableChanged="@(val => latitudeWGS84 = val)" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudInputAngleWithUnitAdornment QuantityLabel="Sexagesimal Longitude (WGS84)"
+                                                        SIValueNullable="longitudeWGS84"
+                                                        SIValueNullableChanged="@(val => longitudeWGS84 = val)" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudInputWithUnitAdornment QuantityName="PlaneAngleGeodesic"
+                                                   QuantityLabel="Decimal Longitude (WGS84)"
+                                                   SIValueNullable="longitudeWGS84"
+                                                   SIValueNullableChanged="@(val => longitudeWGS84 = val)" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudInputWithUnitAdornment QuantityName="DepthDrilling"
+                                                   QuantityLabel="Depth"
+                                                   SIValueNullable="depthWGS84"
+                                                   SIValueNullableChanged="@(val => depthWGS84 = val)" />
+                    </MudItem>
+                    <MudItem xs="12" Class="d-flex align-end">
+                        <MudButton Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   OnClick="CalculateAsync"
+                                   Disabled="@isCalculating">
+                            Calculate
+                        </MudButton>
+                    </MudItem>
+                    @if (isCalculating)
+                    {
+                        <MudItem xs="12">
+                            <MudProgressLinear Indeterminate="true" Color="Color.Info" Class="mt-2" />
+                        </MudItem>
+                    }
+                </MudGrid>
+
+                <MudGrid Class="mt-2">
+                    <MudItem xs="12" sm="6" md="3">
+                        <MudInputWithUnitAdornment QuantityName="AccelerationDrilling"
+                                                   QuantityLabel="Gravity X"
+                                                   ReadOnly="true"
+                                                   SIValueNullable="gravityX"
+                                                   SIValueNullableChanged="@(val => gravityX = val)" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6" md="3">
+                        <MudInputWithUnitAdornment QuantityName="AccelerationDrilling"
+                                                   QuantityLabel="Gravity Y"
+                                                   ReadOnly="true"
+                                                   SIValueNullable="gravityY"
+                                                   SIValueNullableChanged="@(val => gravityY = val)" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6" md="3">
+                        <MudInputWithUnitAdornment QuantityName="AccelerationDrilling"
+                                                   QuantityLabel="Gravity Z"
+                                                   ReadOnly="true"
+                                                   SIValueNullable="gravityZ"
+                                                   SIValueNullableChanged="@(val => gravityZ = val)" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6" md="3">
+                        <MudInputWithUnitAdornment QuantityName="AccelerationDrilling"
+                                                   QuantityLabel="Gravity magnitude"
+                                                   ReadOnly="true"
+                                                   SIValueNullable="gravityMagnitude"
+                                                   SIValueNullableChanged="@(val => gravityMagnitude = val)" />
+                    </MudItem>
+                </MudGrid>
+            </MudContainer>
+        </MudPaper>
+    </MudForm>
+</MudUnitAndReferenceChoiceTag>
+
+@code {
+    private double? latitudeWGS84;
+    private double? longitudeWGS84;
+    private double? depthWGS84;
+    private double? gravityX;
+    private double? gravityY;
+    private double? gravityZ;
+    private double? gravityMagnitude;
+    private bool isCalculating;
+
+    private async Task CalculateAsync()
+    {
+        if (latitudeWGS84 == null || longitudeWGS84 == null || depthWGS84 == null)
+        {
+            Snackbar.Add("Latitude, longitude, and depth are required.", Severity.Warning);
+            return;
+        }
+
+        try
+        {
+            isCalculating = true;
+            GravitationalData? result = await CalculateGravitationalFieldAsync(latitudeWGS84.Value, longitudeWGS84.Value, depthWGS84.Value);
+            if (result == null)
+            {
+                ClearResults();
+                Snackbar.Add("No earth gravitational field value was returned for this location.", Severity.Warning);
+            }
+            else
+            {
+                gravityX = result.GravitatyIntensityX;
+                gravityY = result.GravitatyIntensityY;
+                gravityZ = result.GravitatyIntensityZ;
+                gravityMagnitude = CalculateMagnitude(gravityX, gravityY, gravityZ);
+                Snackbar.Add("Earth gravitational field calculation completed.", Severity.Success);
+            }
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Problem while calculating earth gravitational field");
+            Snackbar.Add("Problem while calculating earth gravitational field: " + ex.Message, Severity.Error);
+        }
+        finally
+        {
+            isCalculating = false;
+        }
+    }
+
+    private async Task<GravitationalData?> CalculateGravitationalFieldAsync(double latitude, double longitude, double depth)
+    {
+        Guid orderId = Guid.NewGuid();
+        DateTimeOffset now = DateTimeOffset.UtcNow;
+        GravitationalFieldCalculationOrder order = new()
+        {
+            MetaInfo = CreateMetaInfo(orderId, "GravitationalFieldCalculationOrder/"),
+            Name = $"Earth gravitational field {orderId}",
+            Description = "Temporary single earth gravitational field calculation.",
+            CreationDate = now,
+            LastModificationDate = now,
+            RawGravitationalField = new GravitationalField
+            {
+                MetaInfo = CreateMetaInfo(Guid.NewGuid(), "GravitationalField/"),
+                Name = $"Raw earth gravitational field {orderId}",
+                Description = "Temporary single earth gravitational field calculation input.",
+                CreationDate = now,
+                LastModificationDate = now,
+                Type = GravitationalFieldType.Raw,
+                GravitationalDataTable =
+                [
+                    new GravitationalData
+                    {
+                        Lattitude = latitude,
+                        Longitude = longitude,
+                        Depth = depth
+                    }
+                ]
+            },
+            CompletedGravitationalField = new GravitationalField
+            {
+                MetaInfo = CreateMetaInfo(Guid.NewGuid(), "GravitationalField/"),
+                Name = $"Completed earth gravitational field {orderId}",
+                Description = "Temporary single earth gravitational field calculation result.",
+                CreationDate = now,
+                LastModificationDate = now,
+                Type = GravitationalFieldType.Completed,
+                GravitationalDataTable = []
+            }
+        };
+
+        try
+        {
+            await Api.ClientGravitationalField.PostGravitationalFieldCalculationOrderAsync(order);
+            GravitationalFieldCalculationOrder completed = await Api.ClientGravitationalField.GetGravitationalFieldCalculationOrderByIdAsync(orderId);
+            return completed.CompletedGravitationalField?.GravitationalDataTable?.FirstOrDefault();
+        }
+        finally
+        {
+            try
+            {
+                await Api.ClientGravitationalField.DeleteGravitationalFieldCalculationOrderByIdAsync(orderId);
+            }
+            catch
+            {
+            }
+        }
+    }
+
+    private MetaInfo CreateMetaInfo(Guid id, string endPoint) =>
+        new()
+        {
+            ID = id,
+            HttpHostName = Api.HostNameGravitationalField,
+            HttpHostBasePath = Api.HostBasePathGravitationalField,
+            HttpEndPoint = endPoint
+        };
+
+    private static double? CalculateMagnitude(double? x, double? y, double? z)
+    {
+        if (x == null || y == null || z == null)
+        {
+            return null;
+        }
+
+        return Math.Sqrt(x.Value * x.Value + y.Value * y.Value + z.Value * z.Value);
+    }
+
+    private void ClearResults()
+    {
+        gravityX = null;
+        gravityY = null;
+        gravityZ = null;
+        gravityMagnitude = null;
+    }
+}
