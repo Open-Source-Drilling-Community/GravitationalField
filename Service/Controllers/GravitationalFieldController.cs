@@ -30,6 +30,7 @@ namespace NORCE.Drilling.GravitationalField.Service.Controllers
         [HttpGet(Name = "GetAllGravitationalFieldId")]
         public ActionResult<IEnumerable<Guid?>> GetAllGravitationalFieldId()
         {
+            UsageStatisticsGravitationalField.Instance.IncrementGetAllGravitationalFieldIdPerDay();
             var ids = _gravitationalFieldManager.GetAllGravitationalFieldId();
             if (ids != null)
             {
@@ -48,6 +49,7 @@ namespace NORCE.Drilling.GravitationalField.Service.Controllers
         [HttpGet("MetaInfo", Name = "GetAllGravitationalFieldMetaInfo")]
         public ActionResult<IEnumerable<MetaInfo?>> GetAllGravitationalFieldMetaInfo()
         {
+            UsageStatisticsGravitationalField.Instance.IncrementGetAllGravitationalFieldMetaInfoPerDay();
             var vals = _gravitationalFieldManager.GetAllGravitationalFieldMetaInfo();
             if (vals != null)
             {
@@ -67,6 +69,7 @@ namespace NORCE.Drilling.GravitationalField.Service.Controllers
         [HttpGet("{id}", Name = "GetGravitationalFieldById")]
         public ActionResult<Model.GravitationalField?> GetGravitationalFieldById(Guid id)
         {
+            UsageStatisticsGravitationalField.Instance.IncrementGetGravitationalFieldByIdPerDay();
             if (!id.Equals(Guid.Empty))
             {
                 var val = _gravitationalFieldManager.GetGravitationalFieldById(id);
@@ -91,6 +94,7 @@ namespace NORCE.Drilling.GravitationalField.Service.Controllers
         [HttpGet("HeavyData", Name = "GetAllGravitationalField")]
         public ActionResult<IEnumerable<Model.GravitationalField?>> GetAllGravitationalField()
         {
+            UsageStatisticsGravitationalField.Instance.IncrementGetAllGravitationalFieldPerDay();
             var vals = _gravitationalFieldManager.GetAllGravitationalField();
             if (vals != null)
             {
@@ -108,6 +112,7 @@ namespace NORCE.Drilling.GravitationalField.Service.Controllers
         [HttpGet("Completed", Name = "GetAllCompletedGravitationalField")]
         public ActionResult<IEnumerable<Model.GravitationalField?>> GetAllCompletedGravitationalField(bool completedBool)
         {
+            UsageStatisticsGravitationalField.Instance.IncrementGetAllCompletedGravitationalFieldPerDay();
             var vals = _gravitationalFieldManager.GetAllCompletedGravitationalField(completedBool);
             if (vals != null)
             {
@@ -128,6 +133,7 @@ namespace NORCE.Drilling.GravitationalField.Service.Controllers
         [HttpPost(Name = "PostGravitationalField")]
         public ActionResult PostGravitationalField([FromBody] Model.GravitationalField? data)
         {
+            UsageStatisticsGravitationalField.Instance.IncrementPostGravitationalFieldPerDay();
             if (data != null && data.MetaInfo != null && data.MetaInfo.ID != Guid.Empty)
             {
                 var existingData = _gravitationalFieldManager.GetGravitationalFieldById(data.MetaInfo.ID);
@@ -163,6 +169,7 @@ namespace NORCE.Drilling.GravitationalField.Service.Controllers
         [HttpPut("{id}", Name = "PutGravitationalFieldById")]
         public ActionResult PutGravitationalFieldById(Guid id, [FromBody] Model.GravitationalField data)
         {
+            UsageStatisticsGravitationalField.Instance.IncrementPutGravitationalFieldByIdPerDay();
             if (data != null && data.MetaInfo != null && data.MetaInfo.ID.Equals(id))
             {
                 var existingData = _gravitationalFieldManager.GetGravitationalFieldById(id);
@@ -198,6 +205,7 @@ namespace NORCE.Drilling.GravitationalField.Service.Controllers
         [HttpDelete("{id}", Name = "DeleteGravitationalFieldById")]
         public ActionResult DeleteGravitationalFieldById(Guid id)
         {
+            UsageStatisticsGravitationalField.Instance.IncrementDeleteGravitationalFieldByIdPerDay();
             if (_gravitationalFieldManager.GetGravitationalFieldById(id) != null)
             {
                 if (_gravitationalFieldManager.DeleteGravitationalFieldById(id))

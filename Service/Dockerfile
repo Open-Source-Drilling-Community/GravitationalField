@@ -1,5 +1,6 @@
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
+ENV GRAVITATIONALFIELD_EXTERNAL_CONFIG=/home/GravitationalField.Service.json
 EXPOSE 8080
 EXPOSE 443
 

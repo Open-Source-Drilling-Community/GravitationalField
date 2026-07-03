@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using OSDC.DotnetLibraries.General.DataManagement;
+using NORCE.Drilling.GravitationalField.Model;
 using NORCE.Drilling.GravitationalField.Service.Managers;
 
 namespace NORCE.Drilling.GravitationalField.Service.Controllers
@@ -29,6 +30,7 @@ namespace NORCE.Drilling.GravitationalField.Service.Controllers
         [HttpGet(Name = "GetAllGravitationalFieldCalculationOrderId")]
         public ActionResult<IEnumerable<Guid>> GetAllGravitationalFieldCalculationOrderId()
         {
+            UsageStatisticsGravitationalField.Instance.IncrementGetAllGravitationalFieldCalculationOrderIdPerDay();
             var ids = _gravitationalFieldCalculationOrderManager.GetAllGravitationalFieldCalculationOrderId();
             if (ids != null)
             {
@@ -47,6 +49,7 @@ namespace NORCE.Drilling.GravitationalField.Service.Controllers
         [HttpGet("MetaInfo", Name = "GetAllGravitationalFieldCalculationOrderMetaInfo")]
         public ActionResult<IEnumerable<MetaInfo>> GetAllGravitationalFieldCalculationOrderMetaInfo()
         {
+            UsageStatisticsGravitationalField.Instance.IncrementGetAllGravitationalFieldCalculationOrderMetaInfoPerDay();
             var vals = _gravitationalFieldCalculationOrderManager.GetAllGravitationalFieldCalculationOrderMetaInfo();
             if (vals != null)
             {
@@ -66,6 +69,7 @@ namespace NORCE.Drilling.GravitationalField.Service.Controllers
         [HttpGet("{id}", Name = "GetGravitationalFieldCalculationOrderById")]
         public ActionResult<Model.GravitationalFieldCalculationOrder?> GetGravitationalFieldCalculationOrderById(Guid id)
         {
+            UsageStatisticsGravitationalField.Instance.IncrementGetGravitationalFieldCalculationOrderByIdPerDay();
             if (!id.Equals(Guid.Empty))
             {
                 var val = _gravitationalFieldCalculationOrderManager.GetGravitationalFieldCalculationOrderById(id);
@@ -91,6 +95,7 @@ namespace NORCE.Drilling.GravitationalField.Service.Controllers
         [HttpGet("LightData", Name = "GetAllGravitationalFieldCalculationOrderLight")]
         public ActionResult<IEnumerable<Model.GravitationalFieldCalculationOrderLight>> GetAllGravitationalFieldCalculationOrderLight()
         {
+            UsageStatisticsGravitationalField.Instance.IncrementGetAllGravitationalFieldCalculationOrderLightPerDay();
             var vals = _gravitationalFieldCalculationOrderManager.GetAllGravitationalFieldCalculationOrderLight();
             if (vals != null)
             {
@@ -109,6 +114,7 @@ namespace NORCE.Drilling.GravitationalField.Service.Controllers
         [HttpGet("HeavyData", Name = "GetAllGravitationalFieldCalculationOrder")]
         public ActionResult<IEnumerable<Model.GravitationalFieldCalculationOrder?>> GetAllGravitationalFieldCalculationOrder()
         {
+            UsageStatisticsGravitationalField.Instance.IncrementGetAllGravitationalFieldCalculationOrderPerDay();
             var vals = _gravitationalFieldCalculationOrderManager.GetAllGravitationalFieldCalculationOrder();
             if (vals != null)
             {
@@ -128,6 +134,7 @@ namespace NORCE.Drilling.GravitationalField.Service.Controllers
         [HttpPost(Name = "PostGravitationalFieldCalculationOrder")]
         public ActionResult PostGravitationalFieldCalculationOrder([FromBody] Model.GravitationalFieldCalculationOrder? data)
         {
+            UsageStatisticsGravitationalField.Instance.IncrementPostGravitationalFieldCalculationOrderPerDay();
             // Check if gravitationalFieldCalculationOrder exists in the database through ID
             if (data != null && data.MetaInfo != null && data.MetaInfo.ID != Guid.Empty)
             {
@@ -166,6 +173,7 @@ namespace NORCE.Drilling.GravitationalField.Service.Controllers
         [HttpPut("{id}", Name = "PutGravitationalFieldCalculationOrderById")]
         public ActionResult PutGravitationalFieldCalculationOrderById(Guid id, [FromBody] Model.GravitationalFieldCalculationOrder? data)
         {
+            UsageStatisticsGravitationalField.Instance.IncrementPutGravitationalFieldCalculationOrderByIdPerDay();
             // Check if GravitationalFieldCalculationOrder is in the data base
             if (data != null && data.MetaInfo != null && data.MetaInfo.ID.Equals(id))
             {
@@ -202,6 +210,7 @@ namespace NORCE.Drilling.GravitationalField.Service.Controllers
         [HttpDelete("{id}", Name = "DeleteGravitationalFieldCalculationOrderById")]
         public ActionResult DeleteGravitationalFieldCalculationOrderById(Guid id)
         {
+            UsageStatisticsGravitationalField.Instance.IncrementDeleteGravitationalFieldCalculationOrderByIdPerDay();
             if (_gravitationalFieldCalculationOrderManager.GetGravitationalFieldCalculationOrderById(id) != null)
             {
                 if (_gravitationalFieldCalculationOrderManager.DeleteGravitationalFieldCalculationOrderById(id))

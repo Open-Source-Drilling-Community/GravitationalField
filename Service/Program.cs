@@ -1,13 +1,21 @@
-﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using ModelContextProtocol.Protocol;
 using System.IO;
 using NORCE.Drilling.GravitationalField.Service;
 using NORCE.Drilling.GravitationalField.Service.Managers;
+using NORCE.Drilling.GravitationalField.Service.Mcp;
+using NORCE.Drilling.GravitationalField.Service.Mcp.Tools;
 
 var builder = WebApplication.CreateBuilder(args);
+
+string externalConfigPath = builder.Configuration["GRAVITATIONALFIELD_EXTERNAL_CONFIG"]
+    ?? Path.Combine(SqlConnectionManager.HOME_DIRECTORY, "GravitationalField.Service.json");
+builder.Configuration.AddJsonFile(externalConfigPath, optional: true, reloadOnChange: true);
 
 // registering the manager of SQLite connections through dependency injection
 builder.Services.AddSingleton(sp =>
@@ -49,10 +57,47 @@ builder.Services.AddSwaggerGen(config =>
     config.CustomSchemaIds(type => type.FullName);
 });
 
+builder.Services.Configure<McpHubOptions>(builder.Configuration.GetSection(McpHubOptions.SectionName));
+builder.Services.AddHttpClient(nameof(McpHubRegistrationService));
+builder.Services.AddHostedService<McpHubRegistrationService>();
+
+var serverVersion = typeof(SqlConnectionManager).Assembly.GetName().Version?.ToString() ?? "1.0.0";
+
+builder.Services.AddMcpServer(options =>
+{
+    options.ServerInfo = new Implementation
+    {
+        Name = "GravitationalFieldService",
+        Version = serverVersion
+    };
+    options.Capabilities = new ServerCapabilities
+    {
+        Tools = new ToolsCapability()
+    };
+}).WithHttpTransport();
+
+builder.Services.AddLegacyMcpTool<PingMcpTool>();
+builder.Services.AddLegacyMcpTool<GetAllGravitationalFieldIdsMcpTool>();
+builder.Services.AddLegacyMcpTool<GetAllGravitationalFieldMetaInfoMcpTool>();
+builder.Services.AddLegacyMcpTool<GetGravitationalFieldByIdMcpTool>();
+builder.Services.AddLegacyMcpTool<GetAllGravitationalFieldMcpTool>();
+builder.Services.AddLegacyMcpTool<GetAllCompletedGravitationalFieldMcpTool>();
+builder.Services.AddLegacyMcpTool<PostGravitationalFieldMcpTool>();
+builder.Services.AddLegacyMcpTool<PutGravitationalFieldByIdMcpTool>();
+builder.Services.AddLegacyMcpTool<DeleteGravitationalFieldByIdMcpTool>();
+builder.Services.AddLegacyMcpTool<GetAllGravitationalFieldCalculationOrderIdsMcpTool>();
+builder.Services.AddLegacyMcpTool<GetAllGravitationalFieldCalculationOrderMetaInfoMcpTool>();
+builder.Services.AddLegacyMcpTool<GetGravitationalFieldCalculationOrderByIdMcpTool>();
+builder.Services.AddLegacyMcpTool<GetAllGravitationalFieldCalculationOrderLightMcpTool>();
+builder.Services.AddLegacyMcpTool<GetAllGravitationalFieldCalculationOrderMcpTool>();
+builder.Services.AddLegacyMcpTool<PostGravitationalFieldCalculationOrderMcpTool>();
+builder.Services.AddLegacyMcpTool<PutGravitationalFieldCalculationOrderByIdMcpTool>();
+builder.Services.AddLegacyMcpTool<DeleteGravitationalFieldCalculationOrderByIdMcpTool>();
+builder.Services.AddLegacyMcpTool<GetGravitationalFieldUsageStatisticsMcpTool>();
+
 var app = builder.Build();
 
 var basePath = "/GravitationalField/api";
-var scheme = "http";
 
 app.UsePathBase(basePath);
 
@@ -97,6 +142,8 @@ app.UseCors(cors => cors
                         .AllowCredentials()
            );
 
+app.MapMcp("/mcp");
+app.MapMcpWebSocket("/mcp/ws");
 app.MapControllers();
 app.MapFallbackToFile("index.html");
 

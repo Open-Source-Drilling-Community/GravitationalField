@@ -11,9 +11,13 @@ The solution is composed of:
   - *dependencies* = some external microservices (OpenApi schemas in json format)
 - **Model**
   - defines the main classes and methods to run the microservice
+  - represents calculation points with `Latitude`, `Longitude`, and `Depth`, and stores calculated gravity vector components
+  - tracks per-endpoint usage statistics in `UsageStatisticsGravitationalField`
   - *dependencies* = BaseModels
 - **Service**
   - defines the proper microservice API
+  - exposes an embedded MCP server for AI tool calls against the GravitationalField API and its usage statistics
+  - can optionally register its MCP endpoint on an MCP hub using external configuration
   - *dependencies* = Model
 - **ModelSharedOut**
   - contains C# auto-generated classes for microservice clients dependencies
@@ -28,6 +32,7 @@ The solution is composed of:
   - *dependencies* = ModelShared
 - **WebApp**
   - microservice web app client that manages data associated with GravitationalField and allows single-case and batch interaction with the microservice
+  - provides a harmonized batch calculation editor, a single-case calculator, and usage statistics pages
   - *dependencies* = ModelShared
 - **home** (auto-generated)
   - data are persisted in the microservice container using the Sqlite database located at *home/GravitationalField.db*
@@ -63,6 +68,24 @@ The single-case gravitational field calculator is available at:
 https://dev.digiwells.no/GravitationalField/webapp/GravitationalFieldSingleCalculation
 
 https://app.digiwells.no/GravitationalField/webapp/GravitationalFieldSingleCalculation
+
+Usage statistics are available at:
+
+https://dev.digiwells.no/GravitationalField/webapp/StatisticsGravitationalField
+
+https://app.digiwells.no/GravitationalField/webapp/StatisticsGravitationalField
+
+The embedded MCP server is available at:
+
+https://dev.digiwells.no/GravitationalField/api/mcp
+
+https://app.digiwells.no/GravitationalField/api/mcp
+
+The MCP WebSocket endpoint is available at:
+
+https://dev.digiwells.no/GravitationalField/api/mcp/ws
+
+https://app.digiwells.no/GravitationalField/api/mcp/ws
 
 The OpenApi schema of the microservice is available and testable at:
 

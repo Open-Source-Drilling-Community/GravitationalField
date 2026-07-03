@@ -1,6 +1,8 @@
 # GravitationalField webapp
 
-The GravitationalField webapp serves as a user interface to manage data associated with the GravitationalField microservice and to run single-case gravitational field calculations.
+The GravitationalField webapp serves as a user interface to manage data associated with the GravitationalField microservice, run single-case and batch gravitational field calculations, and inspect usage statistics.
+
+Calculation inputs use latitude, longitude, and depth. The webapp displays them through the configured unit components and sends SI values to the service.
 
 It is packaged as a docker container called:
 
@@ -27,6 +29,12 @@ The single-case gravitational field calculator is available at:
 https://dev.digiwells.no/GravitationalField/webapp/GravitationalFieldSingleCalculation
 
 https://app.digiwells.no/GravitationalField/webapp/GravitationalFieldSingleCalculation
+
+The usage statistics page is available at:
+
+https://dev.digiwells.no/GravitationalField/webapp/StatisticsGravitationalField
+
+https://app.digiwells.no/GravitationalField/webapp/StatisticsGravitationalField
 
 # Funding
 

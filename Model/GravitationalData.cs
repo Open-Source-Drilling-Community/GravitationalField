@@ -10,9 +10,9 @@ namespace NORCE.Drilling.GravitationalField.Model
     public class GravitationalData
     {
         /// <summary>
-        /// Double containing Lattitude
+        /// Double containing Latitude
         /// </summary>
-        public double Lattitude { get; set; }
+        public double Latitude { get; set; }
         /// <summary>
         /// Double containing Longitude
         /// </summary>

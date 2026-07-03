@@ -1,9 +1,9 @@
-{
+﻿{
   "profiles": {
     "WebApp": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "GravitationalField/webapp/GravitationalFieldCalculationOrder",
+      "launchUrl": "GravitationalField/webapp/GravitationalFieldCalculation",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
@@ -13,7 +13,7 @@
     "Docker": {
       "commandName": "Docker",
       "launchBrowser": false,
-      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/GravitationalField/webapp/GravitationalFieldCalculationOrder",
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/GravitationalField/webapp/GravitationalFieldCalculation",
       "publishAllPorts": true,
       "useSSL": true
     },

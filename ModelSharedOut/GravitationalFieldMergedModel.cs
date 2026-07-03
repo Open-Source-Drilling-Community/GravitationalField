@@ -75,7 +75,7 @@ namespace NORCE.Drilling.GravitationalField.ModelShared
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.List<System.Guid?>> GetAllGravitationalFieldIdAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<System.Guid?>> GetAllGravitationalFieldIdAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -116,7 +116,7 @@ namespace NORCE.Drilling.GravitationalField.ModelShared
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.List<System.Guid?>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<System.Guid?>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -215,7 +215,7 @@ namespace NORCE.Drilling.GravitationalField.ModelShared
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.List<MetaInfo>> GetAllGravitationalFieldMetaInfoAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<MetaInfo>> GetAllGravitationalFieldMetaInfoAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -256,7 +256,7 @@ namespace NORCE.Drilling.GravitationalField.ModelShared
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.List<MetaInfo>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<MetaInfo>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -503,7 +503,7 @@ namespace NORCE.Drilling.GravitationalField.ModelShared
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.List<GravitationalField>> GetAllGravitationalFieldAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<GravitationalField>> GetAllGravitationalFieldAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -544,7 +544,7 @@ namespace NORCE.Drilling.GravitationalField.ModelShared
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.List<GravitationalField>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<GravitationalField>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -574,7 +574,7 @@ namespace NORCE.Drilling.GravitationalField.ModelShared
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.List<GravitationalField>> GetAllCompletedGravitationalFieldAsync(bool? completedBool = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<GravitationalField>> GetAllCompletedGravitationalFieldAsync(bool? completedBool = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -621,7 +621,7 @@ namespace NORCE.Drilling.GravitationalField.ModelShared
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.List<GravitationalField>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<GravitationalField>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -651,7 +651,7 @@ namespace NORCE.Drilling.GravitationalField.ModelShared
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.List<System.Guid>> GetAllGravitationalFieldCalculationOrderIdAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<System.Guid>> GetAllGravitationalFieldCalculationOrderIdAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -692,7 +692,7 @@ namespace NORCE.Drilling.GravitationalField.ModelShared
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.List<System.Guid>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<System.Guid>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -791,7 +791,7 @@ namespace NORCE.Drilling.GravitationalField.ModelShared
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.List<MetaInfo>> GetAllGravitationalFieldCalculationOrderMetaInfoAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<MetaInfo>> GetAllGravitationalFieldCalculationOrderMetaInfoAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -832,7 +832,7 @@ namespace NORCE.Drilling.GravitationalField.ModelShared
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.List<MetaInfo>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<MetaInfo>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -1079,7 +1079,7 @@ namespace NORCE.Drilling.GravitationalField.ModelShared
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.List<GravitationalFieldCalculationOrderLight>> GetAllGravitationalFieldCalculationOrderLightAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<GravitationalFieldCalculationOrderLight>> GetAllGravitationalFieldCalculationOrderLightAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -1120,7 +1120,7 @@ namespace NORCE.Drilling.GravitationalField.ModelShared
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.List<GravitationalFieldCalculationOrderLight>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<GravitationalFieldCalculationOrderLight>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -1150,7 +1150,7 @@ namespace NORCE.Drilling.GravitationalField.ModelShared
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.List<GravitationalFieldCalculationOrder>> GetAllGravitationalFieldCalculationOrderAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<GravitationalFieldCalculationOrder>> GetAllGravitationalFieldCalculationOrderAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -1191,7 +1191,78 @@ namespace NORCE.Drilling.GravitationalField.ModelShared
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.List<GravitationalFieldCalculationOrder>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<GravitationalFieldCalculationOrder>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await ReadAsStringAsync(response_.Content, cancellationToken).ConfigureAwait(false);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<UsageStatisticsGravitationalField> GetGravitationalFieldUsageStatisticsAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        {
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    request_.Method = new System.Net.Http.HttpMethod("GET");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+
+                    var urlBuilder_ = new System.Text.StringBuilder();
+                    if (!string.IsNullOrEmpty(_baseUrl)) urlBuilder_.Append(_baseUrl);
+                    // Operation Path: "GravitationalFieldUsageStatistics"
+                    urlBuilder_.Append("GravitationalFieldUsageStatistics");
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<UsageStatisticsGravitationalField>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -1348,11 +1419,32 @@ namespace NORCE.Drilling.GravitationalField.ModelShared
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.2.0 (NJsonSchema v11.5.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class CountPerDay
+    {
+
+        [System.Text.Json.Serialization.JsonPropertyName("Date")]
+        public System.DateTimeOffset Date { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Count")]
+        public long Count { get; set; }
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [System.Text.Json.Serialization.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.2.0 (NJsonSchema v11.5.2.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class GravitationalData
     {
 
-        [System.Text.Json.Serialization.JsonPropertyName("Lattitude")]
-        public double Lattitude { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName("Latitude")]
+        public double Latitude { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("Longitude")]
         public double Longitude { get; set; }
@@ -1404,7 +1496,7 @@ namespace NORCE.Drilling.GravitationalField.ModelShared
         public GravitationalFieldType Type { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("GravitationalDataTable")]
-        public System.Collections.Generic.List<GravitationalData> GravitationalDataTable { get; set; }
+        public System.Collections.Generic.ICollection<GravitationalData> GravitationalDataTable { get; set; }
 
         private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
 
@@ -1492,6 +1584,96 @@ namespace NORCE.Drilling.GravitationalField.ModelShared
 
         [System.Runtime.Serialization.EnumMember(Value = @"Completed")]
         Completed = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.2.0 (NJsonSchema v11.5.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class History
+    {
+
+        [System.Text.Json.Serialization.JsonPropertyName("Data")]
+        public System.Collections.Generic.ICollection<CountPerDay> Data { get; set; }
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [System.Text.Json.Serialization.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.2.0 (NJsonSchema v11.5.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class UsageStatisticsGravitationalField
+    {
+
+        [System.Text.Json.Serialization.JsonPropertyName("LastSaved")]
+        public System.DateTimeOffset LastSaved { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("BackUpInterval")]
+        public string BackUpInterval { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("GetAllGravitationalFieldIdPerDay")]
+        public History GetAllGravitationalFieldIdPerDay { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("GetAllGravitationalFieldMetaInfoPerDay")]
+        public History GetAllGravitationalFieldMetaInfoPerDay { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("GetGravitationalFieldByIdPerDay")]
+        public History GetGravitationalFieldByIdPerDay { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("GetAllGravitationalFieldPerDay")]
+        public History GetAllGravitationalFieldPerDay { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("GetAllCompletedGravitationalFieldPerDay")]
+        public History GetAllCompletedGravitationalFieldPerDay { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("PostGravitationalFieldPerDay")]
+        public History PostGravitationalFieldPerDay { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("PutGravitationalFieldByIdPerDay")]
+        public History PutGravitationalFieldByIdPerDay { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("DeleteGravitationalFieldByIdPerDay")]
+        public History DeleteGravitationalFieldByIdPerDay { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("GetAllGravitationalFieldCalculationOrderIdPerDay")]
+        public History GetAllGravitationalFieldCalculationOrderIdPerDay { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("GetAllGravitationalFieldCalculationOrderMetaInfoPerDay")]
+        public History GetAllGravitationalFieldCalculationOrderMetaInfoPerDay { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("GetGravitationalFieldCalculationOrderByIdPerDay")]
+        public History GetGravitationalFieldCalculationOrderByIdPerDay { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("GetAllGravitationalFieldCalculationOrderLightPerDay")]
+        public History GetAllGravitationalFieldCalculationOrderLightPerDay { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("GetAllGravitationalFieldCalculationOrderPerDay")]
+        public History GetAllGravitationalFieldCalculationOrderPerDay { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("PostGravitationalFieldCalculationOrderPerDay")]
+        public History PostGravitationalFieldCalculationOrderPerDay { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("PutGravitationalFieldCalculationOrderByIdPerDay")]
+        public History PutGravitationalFieldCalculationOrderByIdPerDay { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("DeleteGravitationalFieldCalculationOrderByIdPerDay")]
+        public History DeleteGravitationalFieldCalculationOrderByIdPerDay { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("GetGravitationalFieldUsageStatisticsPerDay")]
+        public History GetGravitationalFieldUsageStatisticsPerDay { get; set; }
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [System.Text.Json.Serialization.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
 
     }
 

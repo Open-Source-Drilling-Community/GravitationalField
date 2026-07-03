@@ -1,154 +1,275 @@
-@using System.Reflection.Metadata
-@inject ILogger<MudInputWithUnitAdornment> logger
+ï»¿@implements IUnitAwareComponent
+@inject ILogger<GravitationalFieldCalculationOrderEdit> logger
 @inject IGravitationalFieldAPIUtils Api
 @inject ISnackbar Snackbar
+@inject IDialogService DialogService
 
+<MudText Class="mt-4 mb-4" Typo="Typo.h6">Edit Earth Gravitational Field Batch Calculation</MudText>
+<MudContainer Class="d-flex flex-row align-center mt-4 mb-4">
+    <MudButton Class="me-1" Variant="Variant.Filled" Color="Color.Success" OnClick="Save">Save</MudButton>
+    <MudButton Class="me-1" Variant="Variant.Filled" Color="Color.Error" OnClick="CloseEditorAsync">Close</MudButton>
+</MudContainer>
 
-<MudPaper Class="ma-2 pa-2" Elevation="4" Style="@($"background:{DataUtils.FLOATING_COLOUR};")">
-    <MudPaper Class="ma-1 pa-1" Elevation="2">
-        <MudToolBar Dense="true">
-            <MudText Typo="Typo.h6" Class="mr-4">Calculation Order</MudText>
-            <MudButton StartIcon="@Icons.Material.Filled.SaveAs" Variant="Variant.Outlined" Color="Color.Primary" OnClick="SaveAsGravitationalFieldCalculationOrder" Class="ml-1">Save new</MudButton>
-            @if (GravitationalFieldCalculationOrderId != null)
-            {
-                <MudButton StartIcon="@Icons.Material.Filled.Save" Variant="Variant.Outlined" Color="Color.Primary" OnClick="SaveGravitationalFieldCalculationOrder" Class="ml-1">Save</MudButton>
-            }
-            <MudSpacer />
-            <MudButton StartIcon="@Icons.Material.Filled.Close" Variant="Variant.Outlined" Color="Color.Error" OnClick="SendMessage" Class="ml-1">Close</MudButton>
-        </MudToolBar>
-        <MudDivider Class="my-1"/>
-        <MudPaper Class="pa-4 ma-2" Elevation="0">
-            <MudGrid>
-                <MudItem xs="6">
-                    <MudTextField @bind-Value="currentGravitationalFieldCalculationOrder.Name" Label="Name" Variant="Variant.Outlined" Required="true" For="@(() => currentGravitationalFieldCalculationOrder.Name)" />
-                </MudItem>
-                <MudItem xs="6">
-                    <MudTextField @bind-Value="currentGravitationalFieldCalculationOrder.Description" Label="Description" Variant="Variant.Outlined" For="@(() => currentGravitationalFieldCalculationOrder.Description)" />
-                </MudItem>
-            </MudGrid>
-            <MudTabs Elevation="1" Rounded="true" ApplyEffectsToContainer="true" Class="mx-2 my-1">
-                    <MudTabPanel Text="Table">
-                        <MudTable T=GravitationalData Items="currentGravitationalFieldCalculationOrder.RawGravitationalField.GravitationalDataTable">
-                            <HeaderContent>
-                                <MudTh>Lattitude [@(Parent!.GetUnitLabel("PlaneAngleGeodesic"))]</MudTh>
-                                <MudTh>Longitude [@(Parent!.GetUnitLabel("PlaneAngleGeodesic"))]</MudTh>
-                                <MudTh>Depth [@(Parent!.GetUnitLabel("DepthDrilling"))]</MudTh>
-                                <MudTh>
-                                    <MudButton StartIcon="@Icons.Material.Filled.Add" Variant="Variant.Text" Color="Color.Info" OnClick="AddDataSet">Add</MudButton>
-                                </MudTh>
-                                <MudTh>
-                                    <MudButton StartIcon="@Icons.Material.Filled.Remove" Variant="Variant.Text" Color="Color.Info" OnClick="RemoveDataSet">Remove</MudButton>
-                                </MudTh>
-                            </HeaderContent>
-                            <RowTemplate>
-                                <MudTd>
-                                    <MudInputAngleWithUnit
-                                        SIValue="context.Lattitude"
-                                        SIValueChanged="@(val => context.Lattitude = val)"/>
-                                </MudTd>
-                                <MudTd>
-                                    <MudInputAngleWithUnit
-                                        SIValue="context.Longitude"
-                                        SIValueChanged="@(val => context.Longitude = val)"/>
-                                </MudTd>
-                                <MudTd>
-                                    <MudInputWithUnit
-                                        SIValue="context.Depth"
-                                        QuantityName="DepthDrilling"
-                                        SIValueChanged="@(val => context.Depth = val)"/>
-                                </MudTd>
-                            </RowTemplate>
-                        </MudTable>
-                    </MudTabPanel>
-                    <MudTabPanel Text="Range">
-                        <MudPaper Class="pa-3 ma-2">
-                            <MudText Typo="Typo.subtitle1" Class="mb-2">Latitude [@(Parent!.GetUnitLabel("PlaneAngleGeodesic"))]</MudText>
-                            <MudGrid>
-                                <MudItem xs="4">
-                                    <MudText Typo="Typo.body2" Class="mb-1">Min</MudText>                                    
-                                    <MudInputWithUnitAdornment SIValue="_latMin" QuantityName="PlaneAngleGeodesic" SIValueChanged="@(val => _latMin = val)"/>
-                                </MudItem>
-                                <MudItem xs="4">
-                                    <MudText Typo="Typo.body2" Class="mb-1">Max</MudText>                                    
-                                    <MudInputWithUnitAdornment SIValue="_latMax" QuantityName="PlaneAngleGeodesic" SIValueChanged="@(val => _latMax = val)"/>
-                                </MudItem>
-                                <MudItem xs="4">
-                                    <MudText Typo="Typo.body2" Class="mb-1">Step</MudText>                                                                        
-                                    <MudInputWithUnitAdornment SIValue="_latStep" QuantityName="PlaneAngleGeodesic" SIValueChanged="@(val => _latStep = val)"/>
-                                </MudItem>
-                            </MudGrid>
-                            <MudText Typo="Typo.subtitle1" Class="mt-3 mb-2">Longitude [@(Parent!.GetUnitLabel("PlaneAngleGeodesic"))]</MudText>
-                            <MudGrid>
-                                <MudItem xs="4">
-                                    <MudText Typo="Typo.body2" Class="mb-1">Min</MudText>
-                                    <MudInputWithUnitAdornment SIValue="_lonMin" QuantityName="PlaneAngleGeodesic" SIValueChanged="@(val => _lonMin = val)"/>
-                                </MudItem>
-                                <MudItem xs="4">
-                                    <MudText Typo="Typo.body2" Class="mb-1">Max</MudText>
-                                    <MudInputWithUnitAdornment SIValue="_lonMax" QuantityName="PlaneAngleGeodesic" SIValueChanged="@(val => _lonMax = val)"/>
-                                </MudItem>
-                                <MudItem xs="4">
-                                    <MudText Typo="Typo.body2" Class="mb-1">Step</MudText>
-                                    <MudInputWithUnitAdornment SIValue="_lonStep" QuantityName="PlaneAngleGeodesic" SIValueChanged="@(val => _lonStep = val)"/>
-                                </MudItem>
-                            </MudGrid>
-                            <MudText Typo="Typo.subtitle1" Class="mt-3 mb-2">Depth [@(Parent!.GetUnitLabel("DepthDrilling"))]</MudText>
-                            <MudGrid>
-                                <MudItem xs="4">
-                                    <MudText Typo="Typo.body2" Class="mb-1">Depth</MudText>
-                                    <MudInputWithUnitAdornment SIValue="_rangeDepth" QuantityName="DepthDrilling" SIValueChanged="@(val => _rangeDepth = val)"/>
-                                </MudItem>
-                            </MudGrid>
-                            <MudButton Class="mt-3" StartIcon="@Icons.Material.Filled.Calculate" Variant="Variant.Filled" Color="Color.Primary" OnClick="GenerateFromRange">Generate Table</MudButton>
-                        </MudPaper>
-                    </MudTabPanel>
-                </MudTabs>
+<MudExpansionPanels Class="mt-4 mb-4" MultiExpansion="true">
+    <MudExpansionPanel Text="Description" Expanded="true">
+        <MudGrid>
+            <MudItem xs="12" md="4">
+                <MudTextField @bind-Value="currentGravitationalFieldCalculationOrder.Name" Label="Name" Required="true" ShrinkLabel Immediate="true" />
+            </MudItem>
+            <MudItem xs="12" md="8">
+                <MudTextField @bind-Value="currentGravitationalFieldCalculationOrder.Description" Label="Description" ShrinkLabel Immediate="true" />
+            </MudItem>
+        </MudGrid>
+    </MudExpansionPanel>
 
-        </MudPaper>
-    </MudPaper>
-</MudPaper>
+    <MudExpansionPanel Text="Input Data" Expanded="true">
+        <MudTable T="GravitationalData" Items="InputData" Dense="true" Hover="true">
+            <HeaderContent>
+                <MudTh>Latitude [@(Parent?.GetUnitLabel("PlaneAngleGeodesic"))]</MudTh>
+                <MudTh>Longitude [@(Parent?.GetUnitLabel("PlaneAngleGeodesic"))]</MudTh>
+                <MudTh>Depth [@(Parent?.GetUnitLabel("DepthDrilling"))]</MudTh>
+                <MudTh>
+                    <MudButton StartIcon="@Icons.Material.Filled.Add" Variant="Variant.Text" Color="Color.Info" OnClick="AddGravitationalData">Add</MudButton>
+                    <MudButton StartIcon="@Icons.Material.Filled.Remove" Variant="Variant.Text" Color="Color.Info" OnClick="RemoveGravitationalData">Remove</MudButton>
+                </MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd>
+                    <MudInputWithUnit
+                        SIValue="context.Latitude"
+                        QuantityName="PlaneAngleGeodesic"
+                        SIValueChanged="@(val => context.Latitude = val)" />
+                </MudTd>
+                <MudTd>
+                    <MudInputWithUnit
+                        SIValue="context.Longitude"
+                        QuantityName="PlaneAngleGeodesic"
+                        SIValueChanged="@(val => context.Longitude = val)" />
+                </MudTd>
+                <MudTd>
+                    <MudInputWithUnit
+                        SIValue="context.Depth"
+                        QuantityName="DepthDrilling"
+                        SIValueChanged="@(val => context.Depth = val)" />
+                </MudTd>
+                <MudTd />
+            </RowTemplate>
+        </MudTable>
+    </MudExpansionPanel>
 
-@code{
-     [CascadingParameter]
+    <MudExpansionPanel Text="Range Generator" Expanded="false">
+        <MudGrid>
+            <MudItem xs="12">
+                <MudText Typo="Typo.subtitle1" Class="mb-2">Latitude Range</MudText>
+            </MudItem>
+            <MudItem xs="12" md="4">
+                <MudInputWithUnitAdornment SIValue="rangeLatMin" QuantityName="PlaneAngleGeodesic" SIValueChanged="@(val => rangeLatMin = val)" />
+            </MudItem>
+            <MudItem xs="12" md="4">
+                <MudInputWithUnitAdornment SIValue="rangeLatMax" QuantityName="PlaneAngleGeodesic" SIValueChanged="@(val => rangeLatMax = val)" />
+            </MudItem>
+            <MudItem xs="12" md="4">
+                <MudInputWithUnitAdornment SIValue="rangeLatStep" QuantityName="PlaneAngleGeodesic" SIValueChanged="@(val => rangeLatStep = val)" />
+            </MudItem>
+
+            <MudItem xs="12">
+                <MudText Typo="Typo.subtitle1" Class="mt-2 mb-2">Longitude Range</MudText>
+            </MudItem>
+            <MudItem xs="12" md="4">
+                <MudInputWithUnitAdornment SIValue="rangeLonMin" QuantityName="PlaneAngleGeodesic" SIValueChanged="@(val => rangeLonMin = val)" />
+            </MudItem>
+            <MudItem xs="12" md="4">
+                <MudInputWithUnitAdornment SIValue="rangeLonMax" QuantityName="PlaneAngleGeodesic" SIValueChanged="@(val => rangeLonMax = val)" />
+            </MudItem>
+            <MudItem xs="12" md="4">
+                <MudInputWithUnitAdornment SIValue="rangeLonStep" QuantityName="PlaneAngleGeodesic" SIValueChanged="@(val => rangeLonStep = val)" />
+            </MudItem>
+
+            <MudItem xs="12">
+                <MudText Typo="Typo.subtitle1" Class="mt-2 mb-2">Depth</MudText>
+            </MudItem>
+            <MudItem xs="12" md="4">
+                <MudInputWithUnitAdornment SIValue="rangeDepth" QuantityName="DepthDrilling" SIValueChanged="@(val => rangeDepth = val)" />
+            </MudItem>
+            <MudItem xs="12" md="4" Class="d-flex align-end">
+                <MudButton StartIcon="@Icons.Material.Filled.Refresh" Variant="Variant.Filled" Color="Color.Info" OnClick="GenerateFromRange" Class="mb-1">
+                    Generate Table
+                </MudButton>
+            </MudItem>
+        </MudGrid>
+    </MudExpansionPanel>
+
+    <MudExpansionPanel Text="Calculated Results" Expanded="true">
+        @if (ResultData.Count == 0)
+        {
+            <MudText Typo="Typo.body2">No calculated results are available yet. Save the batch calculation to update the results.</MudText>
+        }
+        else
+        {
+            <MudTable T="GravitationalData" Items="ResultData" Dense="true" Hover="true">
+                <HeaderContent>
+                    <MudTh>Latitude [@(Parent?.GetUnitLabel("PlaneAngleGeodesic"))]</MudTh>
+                    <MudTh>Longitude [@(Parent?.GetUnitLabel("PlaneAngleGeodesic"))]</MudTh>
+                    <MudTh>Depth [@(Parent?.GetUnitLabel("DepthDrilling"))]</MudTh>
+                    <MudTh>Gx [@(Parent?.GetUnitLabel("AccelerationDrilling"))]</MudTh>
+                    <MudTh>Gy [@(Parent?.GetUnitLabel("AccelerationDrilling"))]</MudTh>
+                    <MudTh>Gz [@(Parent?.GetUnitLabel("AccelerationDrilling"))]</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd><MudText>@FormatDouble(context.Latitude, "PlaneAngleGeodesic")</MudText></MudTd>
+                    <MudTd><MudText>@FormatDouble(context.Longitude, "PlaneAngleGeodesic")</MudText></MudTd>
+                    <MudTd><MudText>@FormatDouble(context.Depth, "DepthDrilling")</MudText></MudTd>
+                    <MudTd><MudText>@FormatDouble(context.GravitatyIntensityX, "AccelerationDrilling")</MudText></MudTd>
+                    <MudTd><MudText>@FormatDouble(context.GravitatyIntensityY, "AccelerationDrilling")</MudText></MudTd>
+                    <MudTd><MudText>@FormatDouble(context.GravitatyIntensityZ, "AccelerationDrilling")</MudText></MudTd>
+                </RowTemplate>
+            </MudTable>
+        }
+    </MudExpansionPanel>
+</MudExpansionPanels>
+
+@code {
+    [CascadingParameter]
     private MudUnitAndReferenceChoiceTag? Parent { get; set; }
-    [Parameter]
-    public Guid? GravitationalFieldCalculationOrderId { get; set; }
-    [Parameter]
-    public EventCallback ValueChanged {get; set;}    
 
-    private List<GravitationalField> unprocessedGravitationalFieldList = new();
+    [Parameter]
+    public GravitationalFieldCalculationOrder? CurrentGravitationalFieldCalculationOrder { get; set; }
+
+    [Parameter]
+    public Action? OnUpdate { get; set; }
+
     private GravitationalFieldCalculationOrder currentGravitationalFieldCalculationOrder = PseudoConstructors.ConstructGravitationalFieldCalculationOrder();
-    private double _latMin = 0;
-    private double _latMax = 0;
-    private double _latStep = Math.PI / 180.0; // 1 degree
-    private double _lonMin = 0;
-    private double _lonMax = 0;
-    private double _lonStep = Math.PI / 180.0;
-    private double _rangeDepth = 0;
+    private double rangeLatMin = 0.0;
+    private double rangeLatMax = 0.0;
+    private double rangeLatStep = Math.PI / 180.0;
+    private double rangeLonMin = 0.0;
+    private double rangeLonMax = 0.0;
+    private double rangeLonStep = Math.PI / 180.0;
+    private double rangeDepth = 0.0;
+    private string? cleanCalculationOrderSnapshot_;
+
+    private List<GravitationalData> InputData => currentGravitationalFieldCalculationOrder.RawGravitationalField?.GravitationalDataTable?.ToList() ?? new List<GravitationalData>();
+    private List<GravitationalData> ResultData => currentGravitationalFieldCalculationOrder.CompletedGravitationalField?.GravitationalDataTable?.ToList() ?? new List<GravitationalData>();
+
     protected override async Task OnInitializedAsync()
     {
-        if (GravitationalFieldCalculationOrderId != null)
+        try
         {
-            currentGravitationalFieldCalculationOrder = await Api.ClientGravitationalField.GetGravitationalFieldCalculationOrderByIdAsync(GravitationalFieldCalculationOrderId.Value);
+            if (Parent == null)
+                throw new ArgumentNullException(nameof(Parent), "GravitationalFieldCalculationOrderEdit page must exist within a MudUnitAndReferenceChoiceTag");
+            Parent.Add(this);
+            ManageUnits();
+
+            if (CurrentGravitationalFieldCalculationOrder?.MetaInfo == null)
+            {
+                logger.LogError("Current GravitationalFieldCalculationOrder is null or badly formed");
+                Snackbar.Add("Current Earth Gravitational Field batch calculation is null or badly formed", Severity.Error);
+                return;
+            }
+
+            currentGravitationalFieldCalculationOrder = CurrentGravitationalFieldCalculationOrder;
+            EnsureOrderShape();
+            MarkCalculationOrderClean();
         }
-        unprocessedGravitationalFieldList = await Api.ClientGravitationalField.GetAllCompletedGravitationalFieldAsync(false);
-    
-        await InvokeAsync(() => { StateHasChanged(); });
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Problem on GravitationalFieldCalculationOrder initialization");
+            Snackbar.Add("Problem on Earth Gravitational Field batch calculation initialization", Severity.Error);
+        }
+
+        await InvokeAsync(StateHasChanged);
     }
-    private void AddDataSet()
+
+    public void ManageUnits()
     {
-        currentGravitationalFieldCalculationOrder.
-            RawGravitationalField.
-                GravitationalDataTable.Add(PseudoConstructors.ConstructGravitationalData());
     }
-    private void RemoveDataSet()
+
+    private async Task Save()
+    {
+        try
+        {
+            if (currentGravitationalFieldCalculationOrder.MetaInfo == null)
+            {
+                logger.LogWarning("Problem while saving the GravitationalFieldCalculationOrder");
+                Snackbar.Add("Problem while saving the Earth Gravitational Field batch calculation", Severity.Warning);
+                return;
+            }
+
+            EnsureOrderShape();
+            var lastModificationDate = DateTimeOffset.UtcNow;
+            currentGravitationalFieldCalculationOrder.LastModificationDate = lastModificationDate;
+            currentGravitationalFieldCalculationOrder.RawGravitationalField.Name = currentGravitationalFieldCalculationOrder.Name;
+            currentGravitationalFieldCalculationOrder.RawGravitationalField.Description = currentGravitationalFieldCalculationOrder.Description;
+            currentGravitationalFieldCalculationOrder.RawGravitationalField.LastModificationDate = lastModificationDate;
+
+            await Api.ClientGravitationalField.PutGravitationalFieldCalculationOrderByIdAsync(
+                currentGravitationalFieldCalculationOrder.MetaInfo.ID,
+                currentGravitationalFieldCalculationOrder);
+
+            currentGravitationalFieldCalculationOrder = await Api.ClientGravitationalField.GetGravitationalFieldCalculationOrderByIdAsync(currentGravitationalFieldCalculationOrder.MetaInfo.ID);
+            EnsureOrderShape();
+            MarkCalculationOrderClean();
+            logger.LogInformation("Updated the GravitationalFieldCalculationOrder successfully");
+            Snackbar.Add("Saved the Earth Gravitational Field batch calculation successfully", Severity.Success);
+        }
+        catch (ApiException ex)
+        {
+            logger.LogError(ex, "Problem while saving the GravitationalFieldCalculationOrder");
+            Snackbar.Add("Problem while saving the Earth Gravitational Field batch calculation", Severity.Warning);
+        }
+    }
+
+    private async Task CloseEditorAsync()
+    {
+        if (HasUnsavedCalculationOrderChanges() && !await ConfirmCloseWithoutSavingAsync())
+        {
+            return;
+        }
+
+        OnUpdate?.Invoke();
+    }
+
+    private void EnsureOrderShape()
+    {
+        var date = DateTimeOffset.UtcNow;
+
+        currentGravitationalFieldCalculationOrder.RawGravitationalField ??= PseudoConstructors.ConstructGravitationalField();
+        currentGravitationalFieldCalculationOrder.RawGravitationalField.MetaInfo ??= CreateMetaInfo(Guid.NewGuid(), "GravitationalField/");
+        currentGravitationalFieldCalculationOrder.RawGravitationalField.Name ??= currentGravitationalFieldCalculationOrder.Name;
+        currentGravitationalFieldCalculationOrder.RawGravitationalField.Description ??= currentGravitationalFieldCalculationOrder.Description;
+        currentGravitationalFieldCalculationOrder.RawGravitationalField.CreationDate ??= currentGravitationalFieldCalculationOrder.CreationDate ?? date;
+        currentGravitationalFieldCalculationOrder.RawGravitationalField.LastModificationDate ??= currentGravitationalFieldCalculationOrder.LastModificationDate ?? date;
+        currentGravitationalFieldCalculationOrder.RawGravitationalField.Type = GravitationalFieldType.Raw;
+        currentGravitationalFieldCalculationOrder.RawGravitationalField.GravitationalDataTable ??= new List<GravitationalData>();
+
+        if (currentGravitationalFieldCalculationOrder.RawGravitationalField.GravitationalDataTable.Count == 0)
+        {
+            currentGravitationalFieldCalculationOrder.RawGravitationalField.GravitationalDataTable.Add(PseudoConstructors.ConstructGravitationalData());
+        }
+    }
+
+    private MetaInfo CreateMetaInfo(Guid id, string endPoint)
+    {
+        return new MetaInfo
+        {
+            ID = id,
+            HttpHostName = Api.HostNameGravitationalField,
+            HttpHostBasePath = Api.HostBasePathGravitationalField,
+            HttpEndPoint = endPoint
+        };
+    }
+
+    private void AddGravitationalData()
+    {
+        currentGravitationalFieldCalculationOrder.RawGravitationalField.GravitationalDataTable.Add(PseudoConstructors.ConstructGravitationalData());
+    }
+
+    private void RemoveGravitationalData()
     {
         if (currentGravitationalFieldCalculationOrder.RawGravitationalField.GravitationalDataTable.Count > 1)
         {
-            currentGravitationalFieldCalculationOrder.RawGravitationalField.
-                                                        GravitationalDataTable.RemoveAt(currentGravitationalFieldCalculationOrder.
-                                                                                            RawGravitationalField.
-                                                                                            GravitationalDataTable.Count - 1);    
+            var lastDataPoint = currentGravitationalFieldCalculationOrder.RawGravitationalField.GravitationalDataTable.Last();
+            currentGravitationalFieldCalculationOrder.RawGravitationalField.GravitationalDataTable.Remove(lastDataPoint);
         }
         else
         {
@@ -156,75 +277,80 @@
         }
     }
 
-    //Send message to parent component
-    private async Task SendMessage()
-    {
-        await ValueChanged.InvokeAsync();
-    }  
-    //Add/Edit panel controls
-    private async Task SaveGravitationalFieldCalculationOrder()
-    {
-        try
-        {
-            if (GravitationalFieldCalculationOrderId != null)
-            {
-                currentGravitationalFieldCalculationOrder.LastModificationDate = DateTimeOffset.UtcNow;            
-                await Api.ClientGravitationalField.PutGravitationalFieldCalculationOrderByIdAsync((Guid) GravitationalFieldCalculationOrderId, currentGravitationalFieldCalculationOrder);
-                Snackbar.Add("GravitationalFieldCalculationOrder updated successfully", Severity.Success);
-                await SendMessage();
-            }
-            else
-            {
-                Snackbar.Add("GravitationalFieldCalculationOrder not found for edition", Severity.Success);
-            }
-
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Error saving GravitationalFieldCalculationOrder");
-            Snackbar.Add("Error saving GravitationalFieldCalculationOrder: " + ex.Message, Severity.Warning);
-        }
-    }
-    private async Task SaveAsGravitationalFieldCalculationOrder()
-    {
-        try
-        {
-            currentGravitationalFieldCalculationOrder.MetaInfo.ID = Guid.NewGuid();
-            currentGravitationalFieldCalculationOrder.CreationDate = DateTimeOffset.UtcNow;
-            currentGravitationalFieldCalculationOrder.LastModificationDate = DateTimeOffset.UtcNow;
-            await Api.ClientGravitationalField.PostGravitationalFieldCalculationOrderAsync(currentGravitationalFieldCalculationOrder);
-            Snackbar.Add("GravitationalFieldCalculationOrder updated successfully", Severity.Success);
-            await SendMessage();                        
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Error saving GravitationalFieldCalculationOrder");
-            Snackbar.Add("Error saving GravitationalFieldCalculationOrder: " + ex.Message, Severity.Warning);
-        }
-    }      
     private void GenerateFromRange()
     {
-        if (_latStep <= 0 || _lonStep <= 0)
+        EnsureOrderShape();
+        if (rangeLatStep <= 0 || rangeLonStep <= 0)
         {
             Snackbar.Add("Step values must be greater than zero", Severity.Warning);
             return;
         }
+
         var points = new List<GravitationalData>();
-        for (double lat = _latMin; lat <= _latMax + _latStep * 1e-9; lat += _latStep)
+        for (double lat = rangeLatMin; lat <= rangeLatMax + rangeLatStep * 1e-9; lat += rangeLatStep)
         {
-            for (double lon = _lonMin; lon <= _lonMax + _lonStep * 1e-9; lon += _lonStep)
+            for (double lon = rangeLonMin; lon <= rangeLonMax + rangeLonStep * 1e-9; lon += rangeLonStep)
             {
-                points.Add(new GravitationalData { Lattitude = lat, Longitude = lon, Depth = _rangeDepth });
+                points.Add(new GravitationalData { Latitude = lat, Longitude = lon, Depth = rangeDepth });
             }
         }
+
         if (points.Count == 0)
         {
-            Snackbar.Add("Range produced no points — check min/max/step values", Severity.Warning);
+            Snackbar.Add("Range produced no points. Check min, max, and step values", Severity.Warning);
             return;
         }
+
         currentGravitationalFieldCalculationOrder.RawGravitationalField.GravitationalDataTable = points;
     }
-    //Update unit system
-    private void ManageUnits(){}        
-    
+
+    private string FormatDouble(double? valNullable, string quantityName)
+    {
+        double val = Parent?.FromSI(valNullable, quantityName) ?? double.NaN;
+        return double.IsNaN(val) ? string.Empty : val.ToString("F2");
+    }
+
+    private void MarkCalculationOrderClean()
+    {
+        cleanCalculationOrderSnapshot_ = BuildCalculationOrderDirtySnapshot();
+    }
+
+    private bool HasUnsavedCalculationOrderChanges()
+    {
+        return cleanCalculationOrderSnapshot_ != null &&
+            !string.Equals(cleanCalculationOrderSnapshot_, BuildCalculationOrderDirtySnapshot(), StringComparison.Ordinal);
+    }
+
+    private string BuildCalculationOrderDirtySnapshot()
+    {
+        return JsonSerializer.Serialize(new
+        {
+            CalculationOrderId = currentGravitationalFieldCalculationOrder.MetaInfo?.ID,
+            currentGravitationalFieldCalculationOrder.Name,
+            currentGravitationalFieldCalculationOrder.Description,
+            InputData = InputData.Select(item => new
+            {
+                item.Latitude,
+                item.Longitude,
+                item.Depth
+            })
+        });
+    }
+
+    private async Task<bool> ConfirmCloseWithoutSavingAsync()
+    {
+        bool? result = await DialogService.ShowMessageBox(
+            "Unsaved changes",
+            "Some changes have not been saved. Close without saving?",
+            yesText: "Close without saving",
+            cancelText: "Stay",
+            options: new DialogOptions
+            {
+                CloseOnEscapeKey = true,
+                FullWidth = false,
+                MaxWidth = MaxWidth.ExtraSmall
+            });
+
+        return result == true;
+    }
 }

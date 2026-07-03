@@ -1,0 +1,180 @@
+@page "/StatisticsGravitationalField"
+@inject ILogger<StatisticsGravitationalField> logger
+@inject IGravitationalFieldAPIUtils Api
+@inject ISnackbar Snackbar
+
+@if (statistics_ == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <MudText Class="mt-4 mb-4" Typo="Typo.h5"><strong>Usage Statistics</strong></MudText>
+
+    <MudExpansionPanels MultiExpansion="true">
+        <MudExpansionPanel Text="Summary" Expanded="true">
+            <MudGrid>
+                <MudItem xs="12" sm="4">
+                    <MudText Typo="Typo.h6">Total count</MudText>
+                    <MudText Typo="Typo.body1">@totalCount_</MudText>
+                </MudItem>
+                <MudItem xs="12" sm="4">
+                    <MudText Typo="Typo.h6">Gravitational Field count</MudText>
+                    <MudText Typo="Typo.body1">@gravitationalFieldCount_</MudText>
+                </MudItem>
+                <MudItem xs="12" sm="4">
+                    <MudText Typo="Typo.h6">Calculation Order count</MudText>
+                    <MudText Typo="Typo.body1">@calculationOrderCount_</MudText>
+                </MudItem>
+            </MudGrid>
+        </MudExpansionPanel>
+
+        <MudExpansionPanel Text="Endpoints" Expanded="true">
+            <MudTable Items="@endpointRows_" Dense="true" Hover="true">
+                <HeaderContent>
+                    <MudTh>Endpoint</MudTh>
+                    <MudTh>Group</MudTh>
+                    <MudTh class="text-right">Count</MudTh>
+                    <MudTh>Last date</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="Endpoint">@context.Endpoint</MudTd>
+                    <MudTd DataLabel="Group">@context.Group</MudTd>
+                    <MudTd DataLabel="Count" class="text-right">@context.Count</MudTd>
+                    <MudTd DataLabel="Last date">@context.LastDateText</MudTd>
+                </RowTemplate>
+            </MudTable>
+        </MudExpansionPanel>
+    </MudExpansionPanels>
+}
+
+@code {
+    private UsageStatisticsGravitationalField? statistics_;
+    private List<EndpointUsageRow> endpointRows_ = new();
+    private long totalCount_;
+    private long gravitationalFieldCount_;
+    private long calculationOrderCount_;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            statistics_ = await Api.ClientGravitationalField.GetGravitationalFieldUsageStatisticsAsync();
+            BuildRows();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Problem UsageStatistics initialization");
+            Snackbar.Add("Problem while loading usage statistics", Severity.Error);
+        }
+    }
+
+    private void BuildRows()
+    {
+        endpointRows_.Clear();
+        totalCount_ = 0;
+        gravitationalFieldCount_ = 0;
+        calculationOrderCount_ = 0;
+
+        if (statistics_ == null)
+        {
+            return;
+        }
+
+        var properties = typeof(UsageStatisticsGravitationalField).GetProperties()
+            .Where(property => property.PropertyType == typeof(History))
+            .OrderBy(property => property.Name);
+
+        foreach (var property in properties)
+        {
+            if (property.GetValue(statistics_) is not History history)
+            {
+                continue;
+            }
+
+            var count = Sum(history);
+            var group = GetGroup(property.Name);
+            totalCount_ += count;
+
+            if (group == "Gravitational Field")
+            {
+                gravitationalFieldCount_ += count;
+            }
+            else if (group == "Calculation Order")
+            {
+                calculationOrderCount_ += count;
+            }
+
+            DateTimeOffset? lastDate = null;
+            if (history.Data != null && history.Data.Count > 0)
+            {
+                lastDate = history.Data.OrderBy(item => item.Date).Last().Date;
+            }
+
+            endpointRows_.Add(new EndpointUsageRow
+            {
+                Endpoint = FormatEndpoint(property.Name),
+                Group = group,
+                Count = count,
+                LastDate = lastDate
+            });
+        }
+    }
+
+    private static long Sum(History history)
+    {
+        long count = 0;
+        if (history.Data == null)
+        {
+            return count;
+        }
+
+        foreach (var item in history.Data)
+        {
+            count += (long)item.Count;
+        }
+
+        return count;
+    }
+
+    private static string GetGroup(string propertyName)
+    {
+        if (propertyName.Contains("CalculationOrder", StringComparison.Ordinal))
+        {
+            return "Calculation Order";
+        }
+
+        if (propertyName.Contains("UsageStatistics", StringComparison.Ordinal))
+        {
+            return "Usage Statistics";
+        }
+
+        return "Gravitational Field";
+    }
+
+    private static string FormatEndpoint(string propertyName)
+    {
+        var name = propertyName;
+        if (name.StartsWith("Get", StringComparison.Ordinal))
+        {
+            name = name[3..];
+        }
+
+        if (name.EndsWith("PerDay", StringComparison.Ordinal))
+        {
+            name = name[..^6];
+        }
+
+        return string.Concat(name.Select((character, index) =>
+            index > 0 && char.IsUpper(character) ? " " + character : character.ToString()));
+    }
+
+    private sealed class EndpointUsageRow
+    {
+        public string Endpoint { get; set; } = string.Empty;
+        public string Group { get; set; } = string.Empty;
+        public long Count { get; set; }
+        public DateTimeOffset? LastDate { get; set; }
+        public string LastDateText => LastDate?.ToString("yyyy-MM-dd") ?? string.Empty;
+    }
+}

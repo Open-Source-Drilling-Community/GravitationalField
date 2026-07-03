@@ -24,7 +24,7 @@
         <MudPaper Class="pa-2 ma-1" Elevation="0">        
             <MudTable T=GravitationalData Items="currentGravitationalField.GravitationalDataTable">
                 <HeaderContent>
-                    <MudTh>Lattitude [@(Parent!.GetUnitLabel("PlaneAngleGeodesic"))]</MudTh>
+                    <MudTh>Latitude [@(Parent!.GetUnitLabel("PlaneAngleGeodesic"))]</MudTh>
                     <MudTh>Longitude [@(Parent!.GetUnitLabel("PlaneAngleGeodesic"))]</MudTh>
                     <MudTh>Depth [@(Parent!.GetUnitLabel("DepthDrilling"))]</MudTh>
                     <MudTh>Gravity Vector [@(Parent!.GetUnitLabel("Acceleration"))]</MudTh>
@@ -32,7 +32,7 @@
                 </HeaderContent>
                 <RowTemplate>                
                     <MudTd>
-                        <MudText>@(FormatDouble(context.Lattitude, "PlaneAngleGeodesic"))</MudText>
+                        <MudText>@(FormatDouble(context.Latitude, "PlaneAngleGeodesic"))</MudText>
                     </MudTd>
                     <MudTd>
                         <MudText>@(FormatDouble(context.Longitude, "PlaneAngleGeodesic"))</MudText>

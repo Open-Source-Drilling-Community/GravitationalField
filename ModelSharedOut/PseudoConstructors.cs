@@ -27,7 +27,7 @@ namespace NORCE.Drilling.GravitationalField.ModelShared
 		{
 			return new GravitationalData
 			{
-				Lattitude = 0.0, 
+				Latitude = 0.0, 
 				Longitude = 0.0, 
 				Depth = 0.0, 
 				GravitatyIntensityX = null, 

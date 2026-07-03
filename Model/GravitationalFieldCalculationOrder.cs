@@ -81,10 +81,10 @@ namespace NORCE.Drilling.GravitationalField.Model
                     GravityModel gravityModel = new GravityModel("egm96", gravityModelPath);
                     foreach (GravitationalData gravitationalData in RawGravitationalField.GravitationalDataTable)
                     {
-                        (double aux, double gx, double gy, double gz) = gravityModel.Gravity(gravitationalData.Lattitude, gravitationalData.Longitude, - gravitationalData.Depth);    
+                        (double aux, double gx, double gy, double gz) = gravityModel.Gravity(gravitationalData.Latitude, gravitationalData.Longitude, - gravitationalData.Depth);    
                         GravitationalData gravitationalDataCompleted = new GravitationalData
                             {
-                                Lattitude = gravitationalData.Lattitude,
+                                Latitude = gravitationalData.Latitude,
                                 Longitude = gravitationalData.Longitude,
                                 Depth = gravitationalData.Depth,
                                 GravitatyIntensityX = gx,

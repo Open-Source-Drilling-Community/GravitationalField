@@ -449,14 +449,47 @@
           }
         }
       }
+    },
+    "/GravitationalFieldUsageStatistics": {
+      "get": {
+        "tags": [
+          "GravitationalFieldUsageStatistics"
+        ],
+        "operationId": "GetGravitationalFieldUsageStatistics",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsageStatisticsGravitationalField"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
+      "CountPerDay": {
+        "type": "object",
+        "properties": {
+          "Date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "Count": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
       "GravitationalData": {
         "type": "object",
         "properties": {
-          "Lattitude": {
+          "Latitude": {
             "type": "number",
             "format": "double"
           },
@@ -585,6 +618,82 @@
           "Completed"
         ],
         "type": "string"
+      },
+      "History": {
+        "type": "object",
+        "properties": {
+          "Data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CountPerDay"
+            },
+            "nullable": true
+          }
+        }
+      },
+      "UsageStatisticsGravitationalField": {
+        "type": "object",
+        "properties": {
+          "LastSaved": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "BackUpInterval": {
+            "type": "string",
+            "format": "date-span"
+          },
+          "GetAllGravitationalFieldIdPerDay": {
+            "$ref": "#/components/schemas/History"
+          },
+          "GetAllGravitationalFieldMetaInfoPerDay": {
+            "$ref": "#/components/schemas/History"
+          },
+          "GetGravitationalFieldByIdPerDay": {
+            "$ref": "#/components/schemas/History"
+          },
+          "GetAllGravitationalFieldPerDay": {
+            "$ref": "#/components/schemas/History"
+          },
+          "GetAllCompletedGravitationalFieldPerDay": {
+            "$ref": "#/components/schemas/History"
+          },
+          "PostGravitationalFieldPerDay": {
+            "$ref": "#/components/schemas/History"
+          },
+          "PutGravitationalFieldByIdPerDay": {
+            "$ref": "#/components/schemas/History"
+          },
+          "DeleteGravitationalFieldByIdPerDay": {
+            "$ref": "#/components/schemas/History"
+          },
+          "GetAllGravitationalFieldCalculationOrderIdPerDay": {
+            "$ref": "#/components/schemas/History"
+          },
+          "GetAllGravitationalFieldCalculationOrderMetaInfoPerDay": {
+            "$ref": "#/components/schemas/History"
+          },
+          "GetGravitationalFieldCalculationOrderByIdPerDay": {
+            "$ref": "#/components/schemas/History"
+          },
+          "GetAllGravitationalFieldCalculationOrderLightPerDay": {
+            "$ref": "#/components/schemas/History"
+          },
+          "GetAllGravitationalFieldCalculationOrderPerDay": {
+            "$ref": "#/components/schemas/History"
+          },
+          "PostGravitationalFieldCalculationOrderPerDay": {
+            "$ref": "#/components/schemas/History"
+          },
+          "PutGravitationalFieldCalculationOrderByIdPerDay": {
+            "$ref": "#/components/schemas/History"
+          },
+          "DeleteGravitationalFieldCalculationOrderByIdPerDay": {
+            "$ref": "#/components/schemas/History"
+          },
+          "GetGravitationalFieldUsageStatisticsPerDay": {
+            "$ref": "#/components/schemas/History"
+          }
+        }
       },
       "MetaInfo": {
         "type": "object",

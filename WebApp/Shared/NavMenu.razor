@@ -1,5 +1,13 @@
 ﻿<MudNavMenu>
-    <MudNavLink Href="/GravitationalField/webapp/Home" Match="NavLinkMatch.Prefix">Home</MudNavLink>    
-    <MudNavLink Href="/GravitationalField/webapp/GravitationalFieldSingleCalculation" Match="NavLinkMatch.All">Earth Gravitational Field Single Calculation</MudNavLink>
-    <MudNavLink Href="/GravitationalField/webapp/GravitationalField" Match="NavLinkMatch.All">Earth Gravitational Field Management</MudNavLink>
+    <MudNavGroup Title="Earth Gravitational Field Management" Expanded="true">
+        <MudNavLink Href="/GravitationalField/webapp/GravitationalFieldCalculation" Match="NavLinkMatch.All">Earth Gravitational Field Batch Calculation</MudNavLink>
+    </MudNavGroup>
+
+    <MudNavGroup Title="Calculators" Expanded="false">
+        <MudNavLink Href="/GravitationalField/webapp/GravitationalFieldSingleCalculation" Match="NavLinkMatch.All">Earth Gravitational Field Single Calculation</MudNavLink>
+    </MudNavGroup>
+
+    <MudNavGroup Title="Monitoring" Expanded="false">
+        <MudNavLink Href="/GravitationalField/webapp/StatisticsGravitationalField" Match="NavLinkMatch.All">Usage Statistics</MudNavLink>
+    </MudNavGroup>
 </MudNavMenu>

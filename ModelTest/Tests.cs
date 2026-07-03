@@ -26,7 +26,7 @@ namespace NORCE.Drilling.GravitationalField.ModelTest
             {
                 new GravitationalData
                 {
-                    Lattitude = 0,
+                    Latitude = 0,
                     Longitude = 0,
                     Depth = 0
                 }

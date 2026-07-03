@@ -448,14 +448,48 @@
           }
         }
       }
+    },
+    "/GravitationalFieldUsageStatistics": {
+      "get": {
+        "tags": [
+          "GravitationalFieldUsageStatistics"
+        ],
+        "operationId": "GetGravitationalFieldUsageStatistics",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NORCE.Drilling.GravitationalField.Model.UsageStatisticsGravitationalField"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
+      "NORCE.Drilling.GravitationalField.Model.CountPerDay": {
+        "type": "object",
+        "properties": {
+          "Date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "Count": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "additionalProperties": false
+      },
       "NORCE.Drilling.GravitationalField.Model.GravitationalData": {
         "type": "object",
         "properties": {
-          "Lattitude": {
+          "Latitude": {
             "type": "number",
             "format": "double"
           },
@@ -588,6 +622,84 @@
           "Completed"
         ],
         "type": "string"
+      },
+      "NORCE.Drilling.GravitationalField.Model.History": {
+        "type": "object",
+        "properties": {
+          "Data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NORCE.Drilling.GravitationalField.Model.CountPerDay"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "NORCE.Drilling.GravitationalField.Model.UsageStatisticsGravitationalField": {
+        "type": "object",
+        "properties": {
+          "LastSaved": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "BackUpInterval": {
+            "type": "string",
+            "format": "date-span"
+          },
+          "GetAllGravitationalFieldIdPerDay": {
+            "$ref": "#/components/schemas/NORCE.Drilling.GravitationalField.Model.History"
+          },
+          "GetAllGravitationalFieldMetaInfoPerDay": {
+            "$ref": "#/components/schemas/NORCE.Drilling.GravitationalField.Model.History"
+          },
+          "GetGravitationalFieldByIdPerDay": {
+            "$ref": "#/components/schemas/NORCE.Drilling.GravitationalField.Model.History"
+          },
+          "GetAllGravitationalFieldPerDay": {
+            "$ref": "#/components/schemas/NORCE.Drilling.GravitationalField.Model.History"
+          },
+          "GetAllCompletedGravitationalFieldPerDay": {
+            "$ref": "#/components/schemas/NORCE.Drilling.GravitationalField.Model.History"
+          },
+          "PostGravitationalFieldPerDay": {
+            "$ref": "#/components/schemas/NORCE.Drilling.GravitationalField.Model.History"
+          },
+          "PutGravitationalFieldByIdPerDay": {
+            "$ref": "#/components/schemas/NORCE.Drilling.GravitationalField.Model.History"
+          },
+          "DeleteGravitationalFieldByIdPerDay": {
+            "$ref": "#/components/schemas/NORCE.Drilling.GravitationalField.Model.History"
+          },
+          "GetAllGravitationalFieldCalculationOrderIdPerDay": {
+            "$ref": "#/components/schemas/NORCE.Drilling.GravitationalField.Model.History"
+          },
+          "GetAllGravitationalFieldCalculationOrderMetaInfoPerDay": {
+            "$ref": "#/components/schemas/NORCE.Drilling.GravitationalField.Model.History"
+          },
+          "GetGravitationalFieldCalculationOrderByIdPerDay": {
+            "$ref": "#/components/schemas/NORCE.Drilling.GravitationalField.Model.History"
+          },
+          "GetAllGravitationalFieldCalculationOrderLightPerDay": {
+            "$ref": "#/components/schemas/NORCE.Drilling.GravitationalField.Model.History"
+          },
+          "GetAllGravitationalFieldCalculationOrderPerDay": {
+            "$ref": "#/components/schemas/NORCE.Drilling.GravitationalField.Model.History"
+          },
+          "PostGravitationalFieldCalculationOrderPerDay": {
+            "$ref": "#/components/schemas/NORCE.Drilling.GravitationalField.Model.History"
+          },
+          "PutGravitationalFieldCalculationOrderByIdPerDay": {
+            "$ref": "#/components/schemas/NORCE.Drilling.GravitationalField.Model.History"
+          },
+          "DeleteGravitationalFieldCalculationOrderByIdPerDay": {
+            "$ref": "#/components/schemas/NORCE.Drilling.GravitationalField.Model.History"
+          },
+          "GetGravitationalFieldUsageStatisticsPerDay": {
+            "$ref": "#/components/schemas/NORCE.Drilling.GravitationalField.Model.History"
+          }
+        },
+        "additionalProperties": false
       },
       "OSDC.DotnetLibraries.General.DataManagement.MetaInfo": {
         "type": "object",
