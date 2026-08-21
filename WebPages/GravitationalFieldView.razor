@@ -80,17 +80,17 @@
     }  
     private string FormatGravityMagnitude(GravitationalData gravData)
     {
-        double gravX = Parent!.FromSI(gravData.GravitatyIntensityX, "Acceleration") ?? Double.NaN;// (gravData.GravitatyIntensityX == null) ? Double.NaN : (double) gravData.GravitatyIntensityX;
-        double gravY = Parent!.FromSI(gravData.GravitatyIntensityY, "Acceleration") ?? Double.NaN;// (gravData.GravitatyIntensityY == null) ? Double.NaN : (double) gravData.GravitatyIntensityY;
-        double gravZ = Parent!.FromSI(gravData.GravitatyIntensityZ, "Acceleration") ?? Double.NaN;// (gravData.GravitatyIntensityZ == null) ? Double.NaN : (double) gravData.GravitatyIntensityZ;
+        double gravX = Parent!.FromSI(gravData.GravityIntensityX, "Acceleration") ?? Double.NaN;// (gravData.GravityIntensityX == null) ? Double.NaN : (double) gravData.GravityIntensityX;
+        double gravY = Parent!.FromSI(gravData.GravityIntensityY, "Acceleration") ?? Double.NaN;// (gravData.GravityIntensityY == null) ? Double.NaN : (double) gravData.GravityIntensityY;
+        double gravZ = Parent!.FromSI(gravData.GravityIntensityZ, "Acceleration") ?? Double.NaN;// (gravData.GravityIntensityZ == null) ? Double.NaN : (double) gravData.GravityIntensityZ;
         double magnitude = Math.Sqrt(gravX*gravX + gravY*gravY + gravZ*gravZ );  
         return magnitude.ToString("F2");
     }
     private string FormatGravityVector(GravitationalData gravData)
     {
-        double gravX = Parent!.FromSI(gravData.GravitatyIntensityX, "Acceleration") ?? Double.NaN;// (gravData.GravitatyIntensityX == null) ? Double.NaN : (double) gravData.GravitatyIntensityX;
-        double gravY = Parent!.FromSI(gravData.GravitatyIntensityY, "Acceleration") ?? Double.NaN;// (gravData.GravitatyIntensityY == null) ? Double.NaN : (double) gravData.GravitatyIntensityY;
-        double gravZ = Parent!.FromSI(gravData.GravitatyIntensityZ, "Acceleration") ?? Double.NaN;// (gravData.GravitatyIntensityZ == null) ? Double.NaN : (double) gravData.GravitatyIntensityZ;
+        double gravX = Parent!.FromSI(gravData.GravityIntensityX, "Acceleration") ?? Double.NaN;// (gravData.GravityIntensityX == null) ? Double.NaN : (double) gravData.GravityIntensityX;
+        double gravY = Parent!.FromSI(gravData.GravityIntensityY, "Acceleration") ?? Double.NaN;// (gravData.GravityIntensityY == null) ? Double.NaN : (double) gravData.GravityIntensityY;
+        double gravZ = Parent!.FromSI(gravData.GravityIntensityZ, "Acceleration") ?? Double.NaN;// (gravData.GravityIntensityZ == null) ? Double.NaN : (double) gravData.GravityIntensityZ;
 
         return "{\t" + gravX.ToString("F2") 
                 + "\t" + gravY.ToString("F2")

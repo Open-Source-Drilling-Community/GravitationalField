@@ -14,6 +14,7 @@ namespace NORCE.Drilling.GravitationalField.Service
                 PropertyNamingPolicy = null                             // Preserve C# properties naming conventions (no forced lower case applied)
             };
 
+            options.Converters.Add(new LegacyGravitationalDataJsonConverter());
             options.Converters.Add(new JsonStringEnumConverter());      // Serialize enums as their string names instead of numeric values
             return options;
         }

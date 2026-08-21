@@ -110,6 +110,14 @@
             return;
         }
 
+        if (!double.IsFinite(latitudeWGS84.Value) || latitudeWGS84.Value < -Math.PI / 2.0 || latitudeWGS84.Value > Math.PI / 2.0 ||
+            !double.IsFinite(longitudeWGS84.Value) || longitudeWGS84.Value < -Math.PI || longitudeWGS84.Value > Math.PI ||
+            !double.IsFinite(depthWGS84.Value))
+        {
+            Snackbar.Add("Latitude must be between -pi/2 and pi/2 radians, longitude between -pi and pi radians, and depth must be finite.", Severity.Warning);
+            return;
+        }
+
         try
         {
             isCalculating = true;
@@ -121,9 +129,9 @@
             }
             else
             {
-                gravityX = result.GravitatyIntensityX;
-                gravityY = result.GravitatyIntensityY;
-                gravityZ = result.GravitatyIntensityZ;
+                gravityX = result.GravityIntensityX;
+                gravityY = result.GravityIntensityY;
+                gravityZ = result.GravityIntensityZ;
                 gravityMagnitude = CalculateMagnitude(gravityX, gravityY, gravityZ);
                 Snackbar.Add("Earth gravitational field calculation completed.", Severity.Success);
             }

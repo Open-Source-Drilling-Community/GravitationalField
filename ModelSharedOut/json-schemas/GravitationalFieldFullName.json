@@ -491,30 +491,40 @@
         "properties": {
           "Latitude": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "description": "WGS84 geodetic latitude in SI radians.",
+            "minimum": -1.5707963267948966,
+            "maximum": 1.5707963267948966
           },
           "Longitude": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "description": "WGS84 geodetic longitude in SI radians.",
+            "minimum": -3.141592653589793,
+            "maximum": 3.141592653589793
           },
           "Depth": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "description": "True vertical depth below the WGS84 ellipsoid in metres, positive downward."
           },
-          "GravitatyIntensityX": {
+          "GravityIntensityX": {
             "type": "number",
             "format": "double",
-            "nullable": true
+            "nullable": true,
+            "description": "Calculated easterly gravity acceleration in metres per second squared."
           },
-          "GravitatyIntensityY": {
+          "GravityIntensityY": {
             "type": "number",
             "format": "double",
-            "nullable": true
+            "nullable": true,
+            "description": "Calculated northerly gravity acceleration in metres per second squared."
           },
-          "GravitatyIntensityZ": {
+          "GravityIntensityZ": {
             "type": "number",
             "format": "double",
-            "nullable": true
+            "nullable": true,
+            "description": "Calculated upward gravity acceleration in metres per second squared, normally negative."
           }
         },
         "additionalProperties": false

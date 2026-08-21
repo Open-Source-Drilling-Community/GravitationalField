@@ -26,11 +26,13 @@ Calculation orders contain raw and completed gravitational fields. Input points 
 
 - `Latitude`: geodetic latitude in SI radians.
 - `Longitude`: geodetic longitude in SI radians.
-- `Depth`: drilling depth in SI metres.
+- `Depth`: true vertical depth below the WGS84 ellipsoid in SI metres, positive downward.
 
-Completed points preserve the input position and add the calculated gravity vector components `GravitatyIntensityX`, `GravitatyIntensityY`, and `GravitatyIntensityZ`.
+The service converts radians to degrees and depth to ellipsoidal height only at the GeographicLib boundary. Calculations use the EGM96 gravity model. Completed points preserve the input position and add `GravityIntensityX` (east), `GravityIntensityY` (north), and `GravityIntensityZ` (up, normally negative), all in metres per second squared.
 
 The latitude property is named `Latitude`. Payloads using the former misspelled `Lattitude` property should be regenerated against the current OpenAPI schema.
+
+Gravity result properties are now spelled `GravityIntensityX`, `GravityIntensityY`, and `GravityIntensityZ`. The service can read older persisted or incoming payloads containing the former `GravitatyIntensity...` spelling, but all responses and newly persisted data use the corrected names.
 
 # Usage statistics
 
@@ -55,29 +57,31 @@ The WebSocket MCP endpoint is:
 The exposed tool groups are:
 
 - `ping`
-- `gravitational_field.*` for GravitationalField CRUD, metadata, ID, and completed-state queries
-- `gravitational_field_calculation_order.*` for calculation-order CRUD, metadata, ID, light, and full-data queries
-- `gravitational_field_usage_statistics.get` for aggregate usage statistics
+- `gravitational_field_...` for GravitationalField CRUD, metadata, ID, and completed-state queries
+- `gravitational_field_calculation_order_...` for calculation-order CRUD, metadata, ID, light, and full-data queries
+- `gravitational_field_usage_statistics_get` for aggregate usage statistics
 
 The current tool names are:
 
-- `gravitational_field.get_all_ids`
-- `gravitational_field.get_all_meta_info`
-- `gravitational_field.get_by_id`
-- `gravitational_field.get_all`
-- `gravitational_field.get_all_completed`
-- `gravitational_field.create`
-- `gravitational_field.update_by_id`
-- `gravitational_field.delete_by_id`
-- `gravitational_field_calculation_order.get_all_ids`
-- `gravitational_field_calculation_order.get_all_meta_info`
-- `gravitational_field_calculation_order.get_by_id`
-- `gravitational_field_calculation_order.get_all_light`
-- `gravitational_field_calculation_order.get_all`
-- `gravitational_field_calculation_order.create`
-- `gravitational_field_calculation_order.update_by_id`
-- `gravitational_field_calculation_order.delete_by_id`
-- `gravitational_field_usage_statistics.get`
+- `gravitational_field_get_all_ids`
+- `gravitational_field_get_all_meta_info`
+- `gravitational_field_get_by_id`
+- `gravitational_field_get_all`
+- `gravitational_field_get_all_completed`
+- `gravitational_field_create`
+- `gravitational_field_update_by_id`
+- `gravitational_field_delete_by_id`
+- `gravitational_field_calculation_order_get_all_ids`
+- `gravitational_field_calculation_order_get_all_meta_info`
+- `gravitational_field_calculation_order_get_by_id`
+- `gravitational_field_calculation_order_get_all_light`
+- `gravitational_field_calculation_order_get_all`
+- `gravitational_field_calculation_order_create`
+- `gravitational_field_calculation_order_update_by_id`
+- `gravitational_field_calculation_order_delete_by_id`
+- `gravitational_field_usage_statistics_get`
+
+For a calculation, create a calculation order containing a unique UUID and its raw input field, retrieve the completed order using the same UUID, and delete the order when it was only a temporary case. The MCP input schemas document this lifecycle and the SI units and bounds of every position and result component.
 
 The service can optionally register itself on an MCP hub. The registration is configured with the `McpHub` section in `appsettings.json` or in an external JSON configuration file. By default the Docker image looks for that external file at:
 

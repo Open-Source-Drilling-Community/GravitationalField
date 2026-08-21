@@ -1,6 +1,7 @@
 using OSDC.DotnetLibraries.Drilling.DrillingProperties;
 using OSDC.DotnetLibraries.General.DataManagement;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace NORCE.Drilling.GravitationalField.Model
 {
@@ -10,29 +11,31 @@ namespace NORCE.Drilling.GravitationalField.Model
     public class GravitationalData
     {
         /// <summary>
-        /// Double containing Latitude
+        /// WGS84 geodetic latitude in radians (SI).
         /// </summary>
+        [Range(-1.5707963267948966, 1.5707963267948966, ErrorMessage = "Latitude must be expressed in SI radians between -pi/2 and pi/2.")]
         public double Latitude { get; set; }
         /// <summary>
-        /// Double containing Longitude
+        /// WGS84 geodetic longitude in radians (SI).
         /// </summary>
+        [Range(-3.1415926535897931, 3.1415926535897931, ErrorMessage = "Longitude must be expressed in SI radians between -pi and pi.")]
         public double Longitude { get; set; }
         /// <summary>
-        /// Double Depth
+        /// True vertical depth below the WGS84 ellipsoid in metres (SI), positive downward.
         /// </summary>
         public double Depth { get; set; }
         /// <summary>
-        /// Double with the x component of the gravity
+        /// Calculated easterly component of gravitational acceleration in metres per second squared (SI).
         /// </summary>
-        public double? GravitatyIntensityX { get; set; } 
+        public double? GravityIntensityX { get; set; }
         /// <summary>
-        /// Double with the y component of the gravity
+        /// Calculated northerly component of gravitational acceleration in metres per second squared (SI).
         /// </summary>
-        public double? GravitatyIntensityY { get; set; } 
+        public double? GravityIntensityY { get; set; }
         /// <summary>
-        /// Double with the z component of the gravity
+        /// Calculated upward component of gravitational acceleration in metres per second squared (SI), normally negative.
         /// </summary>
-        public double? GravitatyIntensityZ { get; set; } 
+        public double? GravityIntensityZ { get; set; }
 
 
         /// <summary>

@@ -1452,14 +1452,14 @@ namespace NORCE.Drilling.GravitationalField.ModelShared
         [System.Text.Json.Serialization.JsonPropertyName("Depth")]
         public double Depth { get; set; }
 
-        [System.Text.Json.Serialization.JsonPropertyName("GravitatyIntensityX")]
-        public double? GravitatyIntensityX { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName("GravityIntensityX")]
+        public double? GravityIntensityX { get; set; }
 
-        [System.Text.Json.Serialization.JsonPropertyName("GravitatyIntensityY")]
-        public double? GravitatyIntensityY { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName("GravityIntensityY")]
+        public double? GravityIntensityY { get; set; }
 
-        [System.Text.Json.Serialization.JsonPropertyName("GravitatyIntensityZ")]
-        public double? GravitatyIntensityZ { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName("GravityIntensityZ")]
+        public double? GravityIntensityZ { get; set; }
 
         private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
 

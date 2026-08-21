@@ -30,9 +30,9 @@ namespace NORCE.Drilling.GravitationalField.ModelShared
 				Latitude = 0.0, 
 				Longitude = 0.0, 
 				Depth = 0.0, 
-				GravitatyIntensityX = null, 
-				GravitatyIntensityY = null, 
-				GravitatyIntensityZ = null, 
+				GravityIntensityX = null,
+				GravityIntensityY = null,
+				GravityIntensityZ = null,
 			};
 		}
 		public static GravitationalField ConstructGravitationalField()

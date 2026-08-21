@@ -2,6 +2,8 @@
 
 The GravitationalField repository hosts a microservice and client webapp for GravitationalField.
 
+Its public calculation contract uses WGS84 latitude and longitude in SI radians and true vertical depth below the WGS84 ellipsoid in metres, positive downward. The service converts these values to GeographicLib's degree/ellipsoidal-height convention internally and returns EGM96 east/north/up acceleration as `GravityIntensityX/Y/Z` in metres per second squared.
+
 # Solution architecture
 
 The solution is composed of:

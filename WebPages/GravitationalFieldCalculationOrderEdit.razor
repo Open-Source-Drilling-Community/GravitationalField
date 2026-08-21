@@ -1,4 +1,4 @@
-﻿@implements IUnitAwareComponent
+@implements IUnitAwareComponent
 @inject ILogger<GravitationalFieldCalculationOrderEdit> logger
 @inject IGravitationalFieldAPIUtils Api
 @inject ISnackbar Snackbar
@@ -119,9 +119,9 @@
                     <MudTd><MudText>@FormatDouble(context.Latitude, "PlaneAngleGeodesic")</MudText></MudTd>
                     <MudTd><MudText>@FormatDouble(context.Longitude, "PlaneAngleGeodesic")</MudText></MudTd>
                     <MudTd><MudText>@FormatDouble(context.Depth, "DepthDrilling")</MudText></MudTd>
-                    <MudTd><MudText>@FormatDouble(context.GravitatyIntensityX, "AccelerationDrilling")</MudText></MudTd>
-                    <MudTd><MudText>@FormatDouble(context.GravitatyIntensityY, "AccelerationDrilling")</MudText></MudTd>
-                    <MudTd><MudText>@FormatDouble(context.GravitatyIntensityZ, "AccelerationDrilling")</MudText></MudTd>
+                    <MudTd><MudText>@FormatDouble(context.GravityIntensityX, "AccelerationDrilling")</MudText></MudTd>
+                    <MudTd><MudText>@FormatDouble(context.GravityIntensityY, "AccelerationDrilling")</MudText></MudTd>
+                    <MudTd><MudText>@FormatDouble(context.GravityIntensityZ, "AccelerationDrilling")</MudText></MudTd>
                 </RowTemplate>
             </MudTable>
         }
@@ -196,6 +196,14 @@
             }
 
             EnsureOrderShape();
+            if (InputData.Any(point =>
+                !double.IsFinite(point.Latitude) || point.Latitude < -Math.PI / 2.0 || point.Latitude > Math.PI / 2.0 ||
+                !double.IsFinite(point.Longitude) || point.Longitude < -Math.PI || point.Longitude > Math.PI ||
+                !double.IsFinite(point.Depth)))
+            {
+                Snackbar.Add("Every latitude must be between -pi/2 and pi/2 radians, every longitude between -pi and pi radians, and every depth must be finite.", Severity.Warning);
+                return;
+            }
             var lastModificationDate = DateTimeOffset.UtcNow;
             currentGravitationalFieldCalculationOrder.LastModificationDate = lastModificationDate;
             currentGravitationalFieldCalculationOrder.RawGravitationalField.Name = currentGravitationalFieldCalculationOrder.Name;
@@ -280,6 +288,13 @@
     private void GenerateFromRange()
     {
         EnsureOrderShape();
+        if (!double.IsFinite(rangeLatMin) || !double.IsFinite(rangeLatMax) || rangeLatMin < -Math.PI / 2.0 || rangeLatMax > Math.PI / 2.0 ||
+            !double.IsFinite(rangeLonMin) || !double.IsFinite(rangeLonMax) || rangeLonMin < -Math.PI || rangeLonMax > Math.PI ||
+            !double.IsFinite(rangeDepth))
+        {
+            Snackbar.Add("Latitude range must stay within -pi/2 to pi/2 radians, longitude within -pi to pi radians, and depth must be finite", Severity.Warning);
+            return;
+        }
         if (rangeLatStep <= 0 || rangeLonStep <= 0)
         {
             Snackbar.Add("Step values must be greater than zero", Severity.Warning);

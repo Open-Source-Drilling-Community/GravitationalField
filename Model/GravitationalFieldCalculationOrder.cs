@@ -1,4 +1,4 @@
-﻿using OSDC.DotnetLibraries.General.DataManagement;
+using OSDC.DotnetLibraries.General.DataManagement;
 using System;
 using System.IO;
 using System.Collections.Generic;
@@ -81,15 +81,30 @@ namespace NORCE.Drilling.GravitationalField.Model
                     GravityModel gravityModel = new GravityModel("egm96", gravityModelPath);
                     foreach (GravitationalData gravitationalData in RawGravitationalField.GravitationalDataTable)
                     {
-                        (double aux, double gx, double gy, double gz) = gravityModel.Gravity(gravitationalData.Latitude, gravitationalData.Longitude, - gravitationalData.Depth);    
+                        if (!double.IsFinite(gravitationalData.Latitude) ||
+                            !double.IsFinite(gravitationalData.Longitude) ||
+                            !double.IsFinite(gravitationalData.Depth) ||
+                            gravitationalData.Latitude < -Math.PI / 2.0 ||
+                            gravitationalData.Latitude > Math.PI / 2.0 ||
+                            gravitationalData.Longitude < -Math.PI ||
+                            gravitationalData.Longitude > Math.PI)
+                        {
+                            return false;
+                        }
+
+                        // GeographicLib expects degrees and ellipsoidal height. The public
+                        // OSDC contract uses radians and true vertical depth positive downward.
+                        double latitudeDegrees = gravitationalData.Latitude * 180.0 / Math.PI;
+                        double longitudeDegrees = gravitationalData.Longitude * 180.0 / Math.PI;
+                        (double aux, double gx, double gy, double gz) = gravityModel.Gravity(latitudeDegrees, longitudeDegrees, -gravitationalData.Depth);
                         GravitationalData gravitationalDataCompleted = new GravitationalData
                             {
                                 Latitude = gravitationalData.Latitude,
                                 Longitude = gravitationalData.Longitude,
                                 Depth = gravitationalData.Depth,
-                                GravitatyIntensityX = gx,
-                                GravitatyIntensityY = gy,
-                                GravitatyIntensityZ = gz                                
+                                GravityIntensityX = gx,
+                                GravityIntensityY = gy,
+                                GravityIntensityZ = gz
                             };
                         gravitationalDataListCompleted.Add(gravitationalDataCompleted);
                     }

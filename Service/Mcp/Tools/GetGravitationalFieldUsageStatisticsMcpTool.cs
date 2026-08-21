@@ -15,11 +15,11 @@ internal sealed class GetGravitationalFieldUsageStatisticsMcpTool : IMcpTool
         _loggerFactory = loggerFactory;
     }
 
-    public string Name => "gravitational_field_usage_statistics.get";
+    public string Name => "gravitational_field_usage_statistics_get";
 
-    public string Description => "Retrieve usage statistics for the GravitationalField microservice.";
+    public string Description => "Retrieve aggregate invocation counters for the GravitationalField HTTP endpoints. This operational tool reports service usage only; it does not return gravitational-field samples, calculation results, or physical model data.";
 
-    public JsonNode? InputSchema => null;
+    public JsonNode? InputSchema => McpToolArgumentHelpers.CreateEmptySchema();
 
     public Task<JsonNode?> InvokeAsync(JsonObject? arguments, CancellationToken cancellationToken)
     {

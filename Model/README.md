@@ -16,9 +16,9 @@ Each `GravitationalData` point uses:
 - `Latitude`: geodetic latitude, in SI radians.
 - `Longitude`: geodetic longitude, in SI radians.
 - `Depth`: drilling depth, in SI metres.
-- `GravitatyIntensityX`: calculated gravity vector X component, in SI acceleration.
-- `GravitatyIntensityY`: calculated gravity vector Y component, in SI acceleration.
-- `GravitatyIntensityZ`: calculated gravity vector Z component, in SI acceleration.
+- `GravityIntensityX`: calculated easterly gravity component, in metres per second squared.
+- `GravityIntensityY`: calculated northerly gravity component, in metres per second squared.
+- `GravityIntensityZ`: calculated upward gravity component, normally negative, in metres per second squared.
 
 The public property is named `Latitude`. Older generated or serialized payloads that used the misspelled `Lattitude` property should be regenerated or migrated to `Latitude`.
 
@@ -31,4 +31,3 @@ For every raw point, a completed point is produced with the same latitude, longi
 ## Units
 
 The model stores values in SI units. Unit and reference display conversions are handled in the web UI by the shared unit/reference components.
-

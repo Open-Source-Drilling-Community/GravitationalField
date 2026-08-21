@@ -60,37 +60,7 @@ internal abstract class GravitationalFieldCalculationOrderToolBase : IMcpTool
     }
 
     protected static JsonObject CreateCalculationOrderSchema(bool includeId)
-    {
-        var properties = new JsonObject
-        {
-            ["gravitationalFieldCalculationOrder"] = new JsonObject
-            {
-                ["type"] = "object"
-            }
-        };
-        var required = new JsonArray
-        {
-            "gravitationalFieldCalculationOrder"
-        };
-
-        if (includeId)
-        {
-            properties["id"] = new JsonObject
-            {
-                ["type"] = "string",
-                ["format"] = "uuid"
-            };
-            required.Add("id");
-        }
-
-        return new JsonObject
-        {
-            ["type"] = "object",
-            ["properties"] = properties,
-            ["required"] = required,
-            ["additionalProperties"] = false
-        };
-    }
+        => McpToolArgumentHelpers.CreateCalculationOrderSchema(includeId);
 }
 
 internal sealed class GetAllGravitationalFieldCalculationOrderIdsMcpTool : GravitationalFieldCalculationOrderToolBase
@@ -98,11 +68,11 @@ internal sealed class GetAllGravitationalFieldCalculationOrderIdsMcpTool : Gravi
     public GetAllGravitationalFieldCalculationOrderIdsMcpTool(ILoggerFactory loggerFactory, SqlConnectionManager connectionManager)
         : base(loggerFactory, connectionManager) { }
 
-    public override string Name => "gravitational_field_calculation_order.get_all_ids";
+    public override string Name => "gravitational_field_calculation_order_get_all_ids";
 
-    public override string Description => "Retrieve all Gravitational field calculation order identifiers.";
+    public override string Description => "List UUIDs for all persisted EGM96 gravitational-field calculation orders. Use an identifier with get_by_id to retrieve both the submitted raw positions and the completed gravity-vector results.";
 
-    public override JsonNode? InputSchema => null;
+    public override JsonNode? InputSchema => McpToolArgumentHelpers.CreateEmptySchema();
 
     public override Task<JsonNode?> InvokeAsync(JsonObject? arguments, CancellationToken cancellationToken)
     {
@@ -117,11 +87,11 @@ internal sealed class GetAllGravitationalFieldCalculationOrderMetaInfoMcpTool : 
     public GetAllGravitationalFieldCalculationOrderMetaInfoMcpTool(ILoggerFactory loggerFactory, SqlConnectionManager connectionManager)
         : base(loggerFactory, connectionManager) { }
 
-    public override string Name => "gravitational_field_calculation_order.get_all_meta_info";
+    public override string Name => "gravitational_field_calculation_order_get_all_meta_info";
 
-    public override string Description => "Retrieve metadata for all Gravitational field calculation orders.";
+    public override string Description => "List metadata for every persisted gravitational-field calculation order without loading raw or completed data tables. Use this lightweight result to locate an order before retrieving it by UUID.";
 
-    public override JsonNode? InputSchema => null;
+    public override JsonNode? InputSchema => McpToolArgumentHelpers.CreateEmptySchema();
 
     public override Task<JsonNode?> InvokeAsync(JsonObject? arguments, CancellationToken cancellationToken)
     {
@@ -136,9 +106,9 @@ internal sealed class GetGravitationalFieldCalculationOrderByIdMcpTool : Gravita
     public GetGravitationalFieldCalculationOrderByIdMcpTool(ILoggerFactory loggerFactory, SqlConnectionManager connectionManager)
         : base(loggerFactory, connectionManager) { }
 
-    public override string Name => "gravitational_field_calculation_order.get_by_id";
+    public override string Name => "gravitational_field_calculation_order_get_by_id";
 
-    public override string Description => "Retrieve an Gravitational field calculation order by identifier.";
+    public override string Description => "Retrieve a complete gravitational-field calculation order by UUID, including its raw WGS84 inputs and completed EGM96 output. This is the result-retrieval step after create; delete the order afterward when it was only a temporary calculation case.";
 
     public override JsonNode? InputSchema => McpToolArgumentHelpers.CreateGuidSchema("id");
 
@@ -160,11 +130,11 @@ internal sealed class GetAllGravitationalFieldCalculationOrderLightMcpTool : Gra
     public GetAllGravitationalFieldCalculationOrderLightMcpTool(ILoggerFactory loggerFactory, SqlConnectionManager connectionManager)
         : base(loggerFactory, connectionManager) { }
 
-    public override string Name => "gravitational_field_calculation_order.get_all_light";
+    public override string Name => "gravitational_field_calculation_order_get_all_light";
 
-    public override string Description => "Retrieve all Gravitational field calculation orders as lightweight records.";
+    public override string Description => "Retrieve lightweight representations of every gravitational-field calculation order. This avoids transferring raw and completed sample tables and is appropriate for browsing calculation names, timestamps, and status.";
 
-    public override JsonNode? InputSchema => null;
+    public override JsonNode? InputSchema => McpToolArgumentHelpers.CreateEmptySchema();
 
     public override Task<JsonNode?> InvokeAsync(JsonObject? arguments, CancellationToken cancellationToken)
     {
@@ -179,11 +149,11 @@ internal sealed class GetAllGravitationalFieldCalculationOrderMcpTool : Gravitat
     public GetAllGravitationalFieldCalculationOrderMcpTool(ILoggerFactory loggerFactory, SqlConnectionManager connectionManager)
         : base(loggerFactory, connectionManager) { }
 
-    public override string Name => "gravitational_field_calculation_order.get_all";
+    public override string Name => "gravitational_field_calculation_order_get_all";
 
-    public override string Description => "Retrieve all Gravitational field calculation orders with full data.";
+    public override string Description => "Retrieve every persisted gravitational-field calculation order with raw and completed data. The response can be large; prefer metadata or light tools for discovery and get_by_id for one selected calculation.";
 
-    public override JsonNode? InputSchema => null;
+    public override JsonNode? InputSchema => McpToolArgumentHelpers.CreateEmptySchema();
 
     public override Task<JsonNode?> InvokeAsync(JsonObject? arguments, CancellationToken cancellationToken)
     {
@@ -200,9 +170,9 @@ internal sealed class PostGravitationalFieldCalculationOrderMcpTool : Gravitatio
     public PostGravitationalFieldCalculationOrderMcpTool(ILoggerFactory loggerFactory, SqlConnectionManager connectionManager)
         : base(loggerFactory, connectionManager) { }
 
-    public override string Name => "gravitational_field_calculation_order.create";
+    public override string Name => "gravitational_field_calculation_order_create";
 
-    public override string Description => "Calculate and create an Gravitational field calculation order.";
+    public override string Description => "Create and execute a persistent EGM96 gravity calculation case. Provide a caller-assigned order UUID and raw WGS84 samples with latitude/longitude in radians and depth below the WGS84 ellipsoid in metres positive downward. Retrieve results with gravitational_field_calculation_order_get_by_id, then optionally delete the temporary order.";
 
     public override JsonNode? InputSchema => Schema;
 
@@ -226,9 +196,9 @@ internal sealed class PutGravitationalFieldCalculationOrderByIdMcpTool : Gravita
     public PutGravitationalFieldCalculationOrderByIdMcpTool(ILoggerFactory loggerFactory, SqlConnectionManager connectionManager)
         : base(loggerFactory, connectionManager) { }
 
-    public override string Name => "gravitational_field_calculation_order.update_by_id";
+    public override string Name => "gravitational_field_calculation_order_update_by_id";
 
-    public override string Description => "Calculate and update an existing Gravitational field calculation order identified by id.";
+    public override string Description => "Replace and recalculate an existing EGM96 gravitational-field order. The id must match gravitationalFieldCalculationOrder.MetaInfo.ID. Raw WGS84 angles are radians and depth is metres positive downward; the completed output reports east, north, and up gravity acceleration in m/s^2.";
 
     public override JsonNode? InputSchema => Schema;
 
@@ -254,9 +224,9 @@ internal sealed class DeleteGravitationalFieldCalculationOrderByIdMcpTool : Grav
     public DeleteGravitationalFieldCalculationOrderByIdMcpTool(ILoggerFactory loggerFactory, SqlConnectionManager connectionManager)
         : base(loggerFactory, connectionManager) { }
 
-    public override string Name => "gravitational_field_calculation_order.delete_by_id";
+    public override string Name => "gravitational_field_calculation_order_delete_by_id";
 
-    public override string Description => "Delete an Gravitational field calculation order by identifier.";
+    public override string Description => "Permanently delete a persisted gravitational-field calculation order by UUID, including its stored raw inputs and completed EGM96 result. This is the cleanup step for a temporary create/get calculation workflow.";
 
     public override JsonNode? InputSchema => McpToolArgumentHelpers.CreateGuidSchema("id");
 

@@ -60,37 +60,7 @@ internal abstract class GravitationalFieldToolBase : IMcpTool
     }
 
     protected static JsonObject CreateGravitationalFieldSchema(bool includeId)
-    {
-        var properties = new JsonObject
-        {
-            ["gravitationalField"] = new JsonObject
-            {
-                ["type"] = "object"
-            }
-        };
-        var required = new JsonArray
-        {
-            "gravitationalField"
-        };
-
-        if (includeId)
-        {
-            properties["id"] = new JsonObject
-            {
-                ["type"] = "string",
-                ["format"] = "uuid"
-            };
-            required.Add("id");
-        }
-
-        return new JsonObject
-        {
-            ["type"] = "object",
-            ["properties"] = properties,
-            ["required"] = required,
-            ["additionalProperties"] = false
-        };
-    }
+        => McpToolArgumentHelpers.CreateGravitationalFieldSchema(includeId);
 }
 
 internal sealed class GetAllGravitationalFieldIdsMcpTool : GravitationalFieldToolBase
@@ -98,11 +68,11 @@ internal sealed class GetAllGravitationalFieldIdsMcpTool : GravitationalFieldToo
     public GetAllGravitationalFieldIdsMcpTool(ILoggerFactory loggerFactory, SqlConnectionManager connectionManager)
         : base(loggerFactory, connectionManager) { }
 
-    public override string Name => "gravitational_field.get_all_ids";
+    public override string Name => "gravitational_field_get_all_ids";
 
-    public override string Description => "Retrieve all Gravitational field identifiers.";
+    public override string Description => "List the UUIDs of every persisted gravitational field. Use this lightweight discovery tool before gravitational_field_get_by_id when only resource identifiers are needed; it does not return metadata or sample data.";
 
-    public override JsonNode? InputSchema => null;
+    public override JsonNode? InputSchema => McpToolArgumentHelpers.CreateEmptySchema();
 
     public override Task<JsonNode?> InvokeAsync(JsonObject? arguments, CancellationToken cancellationToken)
     {
@@ -117,11 +87,11 @@ internal sealed class GetAllGravitationalFieldMetaInfoMcpTool : GravitationalFie
     public GetAllGravitationalFieldMetaInfoMcpTool(ILoggerFactory loggerFactory, SqlConnectionManager connectionManager)
         : base(loggerFactory, connectionManager) { }
 
-    public override string Name => "gravitational_field.get_all_meta_info";
+    public override string Name => "gravitational_field_get_all_meta_info";
 
-    public override string Description => "Retrieve metadata for all Gravitational fields.";
+    public override string Description => "List identity metadata for every persisted gravitational field without loading the potentially large data tables. Use it to select a field by name or UUID before requesting its complete WGS84 positions and gravity results.";
 
-    public override JsonNode? InputSchema => null;
+    public override JsonNode? InputSchema => McpToolArgumentHelpers.CreateEmptySchema();
 
     public override Task<JsonNode?> InvokeAsync(JsonObject? arguments, CancellationToken cancellationToken)
     {
@@ -136,9 +106,9 @@ internal sealed class GetGravitationalFieldByIdMcpTool : GravitationalFieldToolB
     public GetGravitationalFieldByIdMcpTool(ILoggerFactory loggerFactory, SqlConnectionManager connectionManager)
         : base(loggerFactory, connectionManager) { }
 
-    public override string Name => "gravitational_field.get_by_id";
+    public override string Name => "gravitational_field_get_by_id";
 
-    public override string Description => "Retrieve an Gravitational field by identifier.";
+    public override string Description => "Retrieve one complete persisted gravitational field by UUID, including metadata and its data table. Positions are WGS84 latitude/longitude in radians and depth in metres positive downward; completed vectors are east, north, and up in m/s^2.";
 
     public override JsonNode? InputSchema => McpToolArgumentHelpers.CreateGuidSchema("id");
 
@@ -160,11 +130,11 @@ internal sealed class GetAllGravitationalFieldMcpTool : GravitationalFieldToolBa
     public GetAllGravitationalFieldMcpTool(ILoggerFactory loggerFactory, SqlConnectionManager connectionManager)
         : base(loggerFactory, connectionManager) { }
 
-    public override string Name => "gravitational_field.get_all";
+    public override string Name => "gravitational_field_get_all";
 
-    public override string Description => "Retrieve all Gravitational fields with full data.";
+    public override string Description => "Retrieve every persisted gravitational field with full metadata and data tables. This can return a large payload; prefer the IDs or metadata tools for discovery and get_by_id for a selected field.";
 
-    public override JsonNode? InputSchema => null;
+    public override JsonNode? InputSchema => McpToolArgumentHelpers.CreateEmptySchema();
 
     public override Task<JsonNode?> InvokeAsync(JsonObject? arguments, CancellationToken cancellationToken)
     {
@@ -183,7 +153,8 @@ internal sealed class GetAllCompletedGravitationalFieldMcpTool : GravitationalFi
         {
             ["isCompleted"] = new JsonObject
             {
-                ["type"] = "boolean"
+                ["type"] = "boolean",
+                ["description"] = "True selects Completed fields containing calculated vectors; false selects Raw input fields."
             }
         },
         ["required"] = new JsonArray
@@ -196,9 +167,9 @@ internal sealed class GetAllCompletedGravitationalFieldMcpTool : GravitationalFi
     public GetAllCompletedGravitationalFieldMcpTool(ILoggerFactory loggerFactory, SqlConnectionManager connectionManager)
         : base(loggerFactory, connectionManager) { }
 
-    public override string Name => "gravitational_field.get_all_completed";
+    public override string Name => "gravitational_field_get_all_completed";
 
-    public override string Description => "Retrieve all Gravitational fields filtered by completion status.";
+    public override string Description => "Retrieve complete gravitational fields filtered by state. Set isCompleted=true for service-calculated EGM96 vectors or false for raw WGS84 position inputs. Returned angles are radians, depth is metres positive downward, and vectors are m/s^2.";
 
     public override JsonNode? InputSchema => Schema;
 
@@ -232,9 +203,9 @@ internal sealed class PostGravitationalFieldMcpTool : GravitationalFieldToolBase
     public PostGravitationalFieldMcpTool(ILoggerFactory loggerFactory, SqlConnectionManager connectionManager)
         : base(loggerFactory, connectionManager) { }
 
-    public override string Name => "gravitational_field.create";
+    public override string Name => "gravitational_field_create";
 
-    public override string Description => "Create an Gravitational field.";
+    public override string Description => "Persist a gravitational-field dataset without performing a calculation. Supply a caller-assigned MetaInfo.ID and one or more WGS84 positions: latitude/longitude in SI radians and depth below the WGS84 ellipsoid in metres positive downward. Use a calculation-order tool to compute EGM96 values.";
 
     public override JsonNode? InputSchema => Schema;
 
@@ -258,9 +229,9 @@ internal sealed class PutGravitationalFieldByIdMcpTool : GravitationalFieldToolB
     public PutGravitationalFieldByIdMcpTool(ILoggerFactory loggerFactory, SqlConnectionManager connectionManager)
         : base(loggerFactory, connectionManager) { }
 
-    public override string Name => "gravitational_field.update_by_id";
+    public override string Name => "gravitational_field_update_by_id";
 
-    public override string Description => "Update an existing Gravitational field identified by id.";
+    public override string Description => "Replace an existing persisted gravitational field. The route id must identify the resource and match gravitationalField.MetaInfo.ID. This tool stores the supplied field but does not calculate gravity; preserve the SI and WGS84 conventions described by the schema.";
 
     public override JsonNode? InputSchema => Schema;
 
@@ -286,9 +257,9 @@ internal sealed class DeleteGravitationalFieldByIdMcpTool : GravitationalFieldTo
     public DeleteGravitationalFieldByIdMcpTool(ILoggerFactory loggerFactory, SqlConnectionManager connectionManager)
         : base(loggerFactory, connectionManager) { }
 
-    public override string Name => "gravitational_field.delete_by_id";
+    public override string Name => "gravitational_field_delete_by_id";
 
-    public override string Description => "Delete an Gravitational field by identifier.";
+    public override string Description => "Permanently delete one persisted gravitational field by UUID. Use this for obsolete standalone raw or completed datasets; deleting a field is distinct from deleting a calculation order and cannot be undone through MCP.";
 
     public override JsonNode? InputSchema => McpToolArgumentHelpers.CreateGuidSchema("id");
 
